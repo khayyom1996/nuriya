@@ -1,0 +1,1881 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffd9ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Нурия — игры и звуки</title>
+<style>
+  :root{ --ink:#4a3b6b; }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    overflow-x:hidden;
+    font-family: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color:var(--ink);
+    background: linear-gradient(180deg,#bfefff 0%, #dcf4ff 32%, #ffe6f4 70%, #fff7dd 100%);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ================= фоновая сцена ================= */
+  .scene{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden}
+  .sun{
+    position:absolute; top:-52px; right:-36px;
+    font-size: clamp(88px, 13vw, 132px); line-height:1;
+    filter: drop-shadow(0 0 44px rgba(255,214,120,.9));
+    animation: sunPulse 6s ease-in-out infinite;
+  }
+  .cloud{position:absolute; font-size:70px; opacity:.9; animation: drift linear infinite}
+  .cloud.c1{top:64px;  left:-20%; animation-duration:52s; animation-delay:-6s}
+  .cloud.c2{top:160px; left:-30%; font-size:52px; animation-duration:68s; animation-delay:-30s; opacity:.75}
+  .cloud.c3{top:26px;  left:-40%; font-size:44px; animation-duration:84s; animation-delay:-52s; opacity:.6}
+  @keyframes drift{ from{transform:translateX(0)} to{transform:translateX(160vw)} }
+  @keyframes sunPulse{
+    0%,100%{transform:scale(1) rotate(0deg)}
+    50%{transform:scale(1.05) rotate(6deg)}
+  }
+  .hill{
+    position:absolute; left:-10vw; bottom:-9vw; width:120vw; height:30vw;
+    background:linear-gradient(180deg,#bdf0a8,#8fdd83 60%,#7ccf72);
+    border-radius:50% 50% 0 0 / 92% 92% 0 0;
+    box-shadow: 0 -10px 30px rgba(120,200,120,.28);
+  }
+  .tulip{position:absolute; bottom:2.5vw; font-size:clamp(26px,5vw,44px); opacity:.95}
+  .tulip.t1{left:6vw}
+  .tulip.t2{left:24vw; bottom:1.6vw; font-size:clamp(20px,4vw,36px)}
+  .tulip.t3{right:8vw}
+  .tulip.t4{right:26vw; bottom:1.4vw; font-size:clamp(20px,4vw,34px)}
+
+  /* ================= шапка ================= */
+  header{position:relative; z-index:3; text-align:center; padding:12px 62px 0; flex:0 0 auto}
+  h1{
+    margin:0;
+    font-size: clamp(24px, 6.2vw, 38px);
+    letter-spacing:.4px;
+    color:#5b3f8f;
+    text-shadow: 0 3px 0 #fff, 0 8px 18px rgba(91,63,143,.22);
+    transition: opacity .18s ease;
+  }
+  .sub{
+    margin:6px 0 0;
+    font-size: clamp(12px, 3.2vw, 15px);
+    font-weight:700;
+    color:#7d6aa6;
+    text-shadow: 0 2px 0 rgba(255,255,255,.9), 0 0 18px rgba(255,255,255,.8);
+    min-height:1.3em;
+  }
+  .roundbtn{
+    position:absolute; left:8px; top:8px;
+    width:46px; height:46px; border-radius:50%;
+    border:none; background:rgba(255,255,255,.88);
+    color:#7a5aa3; display:grid; place-items:center;
+    box-shadow: 0 6px 14px rgba(120,90,160,.2), inset 0 0 0 2px rgba(255,255,255,.9);
+    cursor:pointer; transition: transform .1s ease;
+    -webkit-appearance:none;
+  }
+  .roundbtn:active{ transform: scale(.9) }
+  .roundbtn[hidden]{ display:none }
+
+  /* ================= экраны ================= */
+  #screens{ position:relative; z-index:2; flex:1 1 auto; display:flex; width:100% }
+  .screen{
+    display:none;
+    flex:1 1 auto;
+    flex-direction:column;
+    justify-content:center;
+    width:100%;
+    max-width:1040px;
+    margin:0 auto;
+    padding: 8px 16px 104px;
+    animation: fadeIn .22s ease;
+  }
+  .screen.active{ display:flex }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
+  /* ================= главный экран: плитки ================= */
+  .tiles{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: clamp(8px, 1.3vh, 16px);
+    width:100%; max-width:720px; margin:0 auto;
+  }
+  @media (min-width: 700px){
+    .tiles{ grid-template-columns: repeat(5, minmax(0,1fr)); max-width:1020px }
+  }
+  .tile{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2px;
+    padding:10px 6px 10px;
+    min-height: clamp(86px, 11.5vh, 148px);
+    border:3px solid #fff;
+    border-radius:30px;
+    background: linear-gradient(165deg, var(--tint,#fff) 0%, #ffffff 66%);
+    box-shadow: 0 10px 20px rgba(120,100,180,.16), inset 0 -5px 0 rgba(120,100,180,.05);
+    font:inherit; color:inherit; cursor:pointer;
+    transition: transform .12s ease;
+    -webkit-appearance:none;
+  }
+  .tile:active{ transform: scale(.955) }
+  .tile:focus-visible{ outline:4px solid #ffaed0; outline-offset:3px }
+  .tile .em{ font-size: clamp(32px, 8vw, 60px); line-height:1; animation: bob 3.8s ease-in-out infinite; filter: drop-shadow(0 5px 6px rgba(120,90,160,.22)) }
+  .tile:nth-child(2n) .em{ animation-delay:-1.3s }
+  .tile:nth-child(3n) .em{ animation-delay:-2.4s }
+  .tile .lbl{ margin-top:3px; font-weight:900; font-size: clamp(11px, 2.9vw, 14px); color:#6a5590; text-align:center; line-height:1.15 }
+
+  @media (min-width: 700px){
+    .tile{ min-height: clamp(132px, 20vh, 240px); border-radius:34px; padding:16px 8px }
+    .tile .em{ font-size: clamp(50px, 5.8vw, 96px) }
+    .tile .lbl{ font-size: clamp(13px, 1.6vw, 18px) }
+  }
+
+  /* ================= зверята ================= */
+  .animal-grid{
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: clamp(10px, 1.5vh, 16px);
+    width:100%;
+  }
+  @media (min-width: 620px){ .animal-grid{ grid-template-columns: repeat(4, minmax(0,1fr)) } }
+  .card{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2px;
+    padding:12px 6px 10px;
+    min-height: clamp(96px, 12.5vh, 158px);
+    border:3px solid #fff;
+    border-radius:26px;
+    background: linear-gradient(165deg, var(--tint,#fff) 0%, #fff 62%);
+    box-shadow: 0 9px 18px rgba(120,100,180,.16), inset 0 -5px 0 rgba(120,100,180,.05);
+    font: inherit; color: inherit; cursor:pointer;
+    transition: transform .12s ease, box-shadow .25s ease;
+    -webkit-appearance:none;
+  }
+  .card:active{ transform: scale(.955) }
+  .card:focus-visible{ outline:4px solid #ffaed0; outline-offset:3px }
+  .card .face{
+    font-size: clamp(42px, 10.5vw, 76px);
+    line-height:1;
+    filter: drop-shadow(0 5px 6px rgba(120,90,160,.22));
+    animation: bob 3.8s ease-in-out infinite;
+    display:block;
+  }
+  .card .name{ font-size: clamp(11px, 2.9vw, 14px); font-weight:900; color:#6d5896 }
+  .card:nth-child(3n) .face{ animation-delay:-1.1s }
+  .card:nth-child(3n+1) .face{ animation-delay:-2.3s }
+  .card:nth-child(4n) .face{ animation-delay:-1.7s }
+  @keyframes bob{
+    0%,100%{ transform: translateY(0) rotate(-2deg) }
+    50%    { transform: translateY(-5px) rotate(2deg) }
+  }
+
+  .card.pop{ animation: cardPop .58s cubic-bezier(.34,1.56,.64,1) }
+  .card.pop .face{ animation: faceWiggle .58s ease-in-out }
+  @keyframes cardPop{
+    0%  { transform: scale(1) }
+    32% { transform: scale(1.1) rotate(-2deg) }
+    62% { transform: scale(.97) rotate(1.5deg) }
+    100%{ transform: scale(1) }
+  }
+  @keyframes faceWiggle{
+    0%  { transform: scale(1) rotate(0deg) }
+    25% { transform: scale(1.28) rotate(-10deg) }
+    50% { transform: scale(1.16) rotate(9deg) }
+    75% { transform: scale(1.06) rotate(-4deg) }
+    100%{ transform: scale(1) rotate(0deg) }
+  }
+
+  .bubble-say{
+    position:absolute; top:4px; left:50%;
+    transform: translateX(-50%) scale(.6);
+    opacity:0;
+    padding:4px 10px;
+    background:#fff; color:#8a4fa8;
+    font-weight:900; font-size: clamp(12px, 3.2vw, 15px);
+    border-radius:14px;
+    box-shadow: 0 5px 12px rgba(120,90,160,.22);
+    white-space:nowrap; pointer-events:none;
+  }
+  .card.pop .bubble-say{ animation: bubblePop 1s ease-out forwards }
+  @keyframes bubblePop{
+    0%  { opacity:0; transform: translateX(-50%) scale(.5) translateY(8px) }
+    18% { opacity:1; transform: translateX(-50%) scale(1.1) translateY(-4px) }
+    72% { opacity:1; transform: translateX(-50%) scale(1) translateY(-6px) }
+    100%{ opacity:0; transform: translateX(-50%) scale(.9) translateY(-16px) }
+  }
+
+  /* ================= угадай по голосу ================= */
+  .guess-wrap{ width:100%; max-width:760px; margin:0 auto }
+  .listen{
+    display:flex; align-items:center; gap:9px;
+    margin:0 auto 16px; padding:11px 20px;
+    border:none; border-radius:999px;
+    background:#fff; color:#7a5aa3;
+    font: inherit; font-weight:900; font-size: clamp(14px,3.6vw,17px);
+    box-shadow: 0 8px 18px rgba(120,90,160,.2);
+    cursor:pointer; transition: transform .1s ease;
+    -webkit-appearance:none;
+  }
+  .listen:active{ transform: scale(.96) }
+  .listen svg{ width:22px; height:22px }
+  .options{
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: clamp(10px,1.6vh,16px);
+  }
+  .opt{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    padding:12px 6px;
+    min-height: clamp(120px, 18vh, 200px);
+    border:3px solid #fff; border-radius:28px;
+    background: linear-gradient(165deg, var(--tint,#fff) 0%, #fff 64%);
+    box-shadow: 0 10px 20px rgba(120,100,180,.16);
+    font:inherit; color:inherit; cursor:pointer;
+    transition: transform .12s ease, opacity .3s ease, box-shadow .3s ease;
+    -webkit-appearance:none;
+  }
+  .opt:active{ transform: scale(.96) }
+  .opt .oe{ font-size: clamp(46px, 11.5vw, 82px); line-height:1; filter: drop-shadow(0 5px 6px rgba(120,90,160,.2)) }
+  .opt .on{ font-size: clamp(11px,2.9vw,14px); font-weight:900; color:#6d5896 }
+  .opt.correct{ animation: happy .7s ease; box-shadow: 0 0 0 5px #ffd166, 0 14px 26px rgba(255,190,80,.4) }
+  .opt.wrong{ animation: shake .45s ease }
+  .opt.off{ opacity:.3; transform: scale(.94) }
+  @keyframes happy{
+    0%,100%{ transform: scale(1) }
+    30%{ transform: scale(1.09) rotate(-3deg) }
+    60%{ transform: scale(1.03) rotate(2deg) }
+  }
+  @keyframes shake{
+    0%,100%{ transform: translateX(0) }
+    25%{ transform: translateX(-7px) rotate(-2deg) }
+    75%{ transform: translateX(7px) rotate(2deg) }
+  }
+
+  /* ================= пианино ================= */
+  .piano{
+    display:grid;
+    grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: clamp(8px,1.2vh,14px);
+    width:100%; max-width:820px; margin:0 auto;
+  }
+  @media (min-width: 760px){ .piano{ grid-template-columns: repeat(8, minmax(0,1fr)); max-width:none } }
+  .key{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    gap:6px; padding:10px 4px 14px;
+    min-height: clamp(88px, 15vh, 172px);
+    border:3px solid #fff; border-radius:24px;
+    background: linear-gradient(180deg, #fff 0%, var(--k,#ffd9e8) 100%);
+    box-shadow: 0 9px 0 rgba(150,130,200,.22), 0 14px 20px rgba(120,100,180,.16);
+    font:inherit; color:inherit; cursor:pointer;
+    transition: transform .07s ease, box-shadow .07s ease;
+    -webkit-appearance:none;
+  }
+  .key .ke{ font-size: clamp(28px, 7vw, 46px); line-height:1; filter: drop-shadow(0 3px 4px rgba(120,90,160,.2)) }
+  .key .dot{ width:12px; height:12px; border-radius:50%; background:#fff; box-shadow: inset 0 2px 4px rgba(120,100,180,.28) }
+  .key:active, .key.hit{
+    transform: translateY(6px) scale(.985);
+    box-shadow: 0 3px 0 rgba(150,130,200,.22), 0 6px 12px rgba(120,100,180,.14);
+  }
+
+  /* ================= прятки ================= */
+  .hide-grid{
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: clamp(10px,1.5vh,16px);
+    width:100%; max-width:760px; margin:0 auto;
+  }
+  @media (min-width: 700px){ .hide-grid{ grid-template-columns: repeat(3, minmax(0,1fr)) } }
+  .bush{
+    position:relative; overflow:hidden;
+    min-height: clamp(92px, 14vh, 160px);
+    border:3px solid #fff; border-radius:26px;
+    background: linear-gradient(165deg,#f2ffe9,#fff 68%);
+    box-shadow: 0 9px 18px rgba(120,100,180,.16);
+    font:inherit; color:inherit; cursor:pointer;
+    display:grid; place-items:center;
+    -webkit-appearance:none;
+  }
+  .bush .who{ font-size: clamp(38px, 9.5vw, 62px); line-height:1; transform: scale(.7); opacity:.25; transition: transform .3s ease, opacity .3s ease }
+  .bush.open .who{ transform: scale(1); opacity:1; animation: peek .6s cubic-bezier(.34,1.56,.64,1) }
+  @keyframes peek{
+    0%{ transform: scale(.15) rotate(-14deg) }
+    60%{ transform: scale(1.15) rotate(6deg) }
+    100%{ transform: scale(1) rotate(0) }
+  }
+  .bush .cover{
+    position:absolute; inset:-2px;
+    display:grid; place-items:center;
+    font-size: clamp(34px, 8.5vw, 54px);
+    background: linear-gradient(165deg,#cdf3b6,#a3e488);
+    box-shadow: inset 0 -6px 0 rgba(90,160,80,.18);
+    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .35s ease;
+  }
+  .bush.open .cover{ transform: translateY(-112%) rotate(-6deg); opacity:0 }
+
+  /* ================= пузырьки ================= */
+  .bubble-area{
+    position:relative;
+    width:100%; max-width:860px; margin:0 auto;
+    height: min(64vh, 600px);
+    border-radius:34px;
+    overflow:hidden;
+    background: radial-gradient(120% 80% at 50% 110%, rgba(255,255,255,.5), rgba(150,200,255,.12) 60%, rgba(255,255,255,0) 100%);
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,.55);
+  }
+  .bubble{
+    position:absolute;
+    border-radius:50%;
+    display:grid; place-items:center;
+    background: radial-gradient(circle at 32% 26%, rgba(255,255,255,.98), rgba(255,255,255,.42) 42%, rgba(170,225,255,.6) 100%);
+    box-shadow: inset 0 0 18px rgba(255,255,255,.95), 0 8px 20px rgba(110,150,220,.22);
+    border:2px solid rgba(255,255,255,.9);
+    cursor:pointer;
+    will-change: transform;
+    -webkit-appearance:none;
+  }
+  .bubble:active{ filter: brightness(1.08) }
+
+  /* ================= салют ================= */
+  .fw-area{
+    position:relative;
+    width:100%; max-width:900px; margin:0 auto;
+    height: min(60vh, 540px);
+    border-radius:34px;
+    overflow:hidden;
+    cursor:pointer;
+    background: linear-gradient(180deg, rgba(180,215,255,.35), rgba(255,220,240,.35) 60%, rgba(255,247,221,.5));
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,.7);
+    display:grid; align-content:start; justify-items:center;
+    padding-top:14px;
+  }
+  .fw-area .hint{
+    font-size: clamp(12px,3.1vw,15px);
+    font-weight:900; color:#8a76b5;
+    background: rgba(255,255,255,.7);
+    padding:7px 14px; border-radius:999px;
+    transition: opacity .4s ease;
+    pointer-events:none;
+  }
+  .spark{
+    position:fixed; border-radius:50%;
+    pointer-events:none; z-index:65;
+    animation-name: sparkFly;
+    animation-timing-function: cubic-bezier(.12,.6,.35,1);
+    animation-fill-mode: forwards;
+  }
+  @keyframes sparkFly{
+    0%  { transform: translate(-50%,-50%) scale(1); opacity:1 }
+    70% { opacity:.9 }
+    100%{ transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty) + 46px)) scale(.2); opacity:0 }
+  }
+
+  /* ================= частицы ================= */
+  .bit{ position:fixed; left:0; top:0; z-index:60; pointer-events:none; line-height:1; will-change:transform,opacity }
+  @keyframes bitUp{
+    0%  { opacity:0; transform: translate(-50%,-50%) scale(.35) rotate(0deg) }
+    18% { opacity:1 }
+    100%{ opacity:0; transform: translate(calc(-50% + var(--dx,0px)), calc(-50% - 130px)) scale(1.3) rotate(var(--rot,14deg)) }
+  }
+
+  /* ================= нижняя панель ================= */
+  .bar{
+    position:fixed; z-index:6;
+    left:50%; transform:translateX(-50%);
+    bottom: max(12px, env(safe-area-inset-bottom));
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px 8px 16px;
+    border-radius:999px;
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 12px 26px rgba(110,90,170,.22), inset 0 0 0 2px rgba(255,255,255,.9);
+  }
+  .count{ display:flex; align-items:center; gap:6px; font-weight:900; font-size:15px; color:#7a5aa3 }
+  .iconbtn{
+    width:44px; height:44px; border:none; border-radius:50%;
+    background:#fff; color:#7a5aa3;
+    display:grid; place-items:center;
+    cursor:pointer;
+    box-shadow: 0 4px 10px rgba(120,90,160,.18);
+    transition: transform .1s ease;
+    -webkit-appearance:none;
+  }
+  .iconbtn:active{ transform: scale(.88) }
+  .iconbtn:focus-visible{ outline:4px solid #ffaed0; outline-offset:2px }
+  .iconbtn svg{ width:22px; height:22px; display:block }
+  .iconbtn .ic-off{ display:none }
+  .iconbtn.off .ic-on{ display:none }
+  .iconbtn.off .ic-off{ display:block }
+  .iconbtn.off{ color:#b3a7c9 }
+
+
+  /* ================= имя на главной ================= */
+  .name-glow{
+    color:#ff5f9e;
+    text-shadow: 0 3px 0 #fff, 0 6px 0 #ffe3f0, 0 12px 20px rgba(255,110,170,.45);
+    letter-spacing:1px;
+  }
+
+  /* ================= кто что ест ================= */
+  .eat-wrap{ width:100%; max-width:860px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap: clamp(10px,1.8vh,20px) }
+  .eat-animal{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding: 12px 36px 10px;
+    background: rgba(255,255,255,.85);
+    border:3px solid #fff; border-radius:32px;
+    box-shadow: 0 12px 24px rgba(120,100,180,.18);
+  }
+  .eat-face{ font-size: clamp(58px, 15vw, 112px); line-height:1; animation: bob 3.4s ease-in-out infinite; filter: drop-shadow(0 6px 8px rgba(120,90,160,.22)) }
+  .eat-name{ font-size: clamp(12px,3.3vw,16px); font-weight:900; color:#6d5896 }
+  .eat-bubble{
+    position:absolute; top:-4px; left:50%;
+    transform: translateX(-50%) scale(.5);
+    background:#fff; color:#8a4fa8; font-weight:900; font-size:15px;
+    padding:4px 12px; border-radius:14px;
+    box-shadow:0 5px 12px rgba(120,90,160,.22);
+    opacity:0; pointer-events:none; white-space:nowrap;
+  }
+  .eat-animal.yum .eat-bubble{ animation: bubblePop 1.1s ease-out forwards }
+  .eat-options{
+    display:grid; grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: clamp(10px,1.6vh,18px); width:100%;
+  }
+  .eat-opt{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    padding:12px 6px; min-height: clamp(92px,14vh,168px);
+    border:3px solid #fff; border-radius:26px;
+    background: linear-gradient(165deg,#fff8e6,#fff 72%);
+    box-shadow: 0 9px 18px rgba(120,100,180,.16);
+    font:inherit; color:inherit; cursor:pointer;
+    transition: transform .12s ease, opacity .3s ease;
+    -webkit-appearance:none;
+  }
+  .eat-opt:active{ transform: scale(.96) }
+  .eat-opt .ef{ font-size: clamp(38px, 9.5vw, 76px); line-height:1; filter: drop-shadow(0 4px 6px rgba(120,90,160,.18)) }
+  .eat-opt .en{ font-size: clamp(10px,2.8vw,13px); font-weight:900; color:#6d5896 }
+  .eat-opt.good{ animation: happy .7s ease; box-shadow: 0 0 0 5px #ffd166, 0 14px 26px rgba(255,190,80,.4) }
+  .eat-opt.bad{ animation: shake .45s ease }
+
+  /* ================= найди пару ================= */
+  .mem-grid{
+    display:grid; grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: clamp(10px,1.6vh,18px); width:100%; max-width:720px; margin:0 auto;
+  }
+  .mem-card{
+    position:relative; display:grid; place-items:center;
+    min-height: clamp(96px,15vh,170px);
+    border:3px solid #fff; border-radius:26px;
+    background: linear-gradient(165deg,#eef4ff,#fff 72%);
+    box-shadow: 0 9px 18px rgba(120,100,180,.16);
+    font:inherit; color:inherit; cursor:pointer;
+    transition: transform .12s ease, box-shadow .3s ease, background .3s ease;
+    -webkit-appearance:none;
+  }
+  .mem-card:active{ transform: scale(.96) }
+  .mem-card > span{ grid-area:1/1; line-height:1; transition: opacity .22s ease, transform .32s cubic-bezier(.34,1.56,.64,1) }
+  .mem-card .mem-back{ font-size: clamp(32px, 8.5vw, 56px); color:#b3a5d6; opacity:.8 }
+  .mem-card .mem-face{ font-size: clamp(44px, 11vw, 82px); opacity:0; transform: scale(.35) rotate(-14deg) }
+  .mem-card.open{ background:#fff }
+  .mem-card.open .mem-back{ opacity:0; transform: scale(.35) }
+  .mem-card.open .mem-face{ opacity:1; transform: scale(1) rotate(0deg) }
+  .mem-card.matched{ box-shadow: 0 0 0 5px #ffd166, 0 14px 26px rgba(255,190,80,.35); background: linear-gradient(165deg,#fffbe8,#fff 72%) }
+
+  /* ================= цвета ================= */
+  .color-grid{
+    display:grid; grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: clamp(10px,1.6vh,18px); width:100%; max-width:780px; margin:0 auto;
+  }
+  .color-card{
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:12px 4px; border:3px solid #fff; border-radius:26px;
+    background: rgba(255,255,255,.85);
+    box-shadow: 0 9px 18px rgba(120,100,180,.16);
+    font:inherit; color:inherit; cursor:pointer;
+    transition: transform .12s ease;
+    -webkit-appearance:none;
+  }
+  .color-card:active{ transform: scale(.93) }
+  .color-dot{
+    width: clamp(44px, 11vw, 80px); height: clamp(44px, 11vw, 80px);
+    border-radius:50%;
+    background: radial-gradient(circle at 32% 26%, rgba(255,255,255,.92), var(--c) 44%, var(--c) 100%);
+    box-shadow: inset 0 -7px 14px rgba(0,0,0,.14), 0 6px 12px rgba(90,70,140,.18);
+  }
+  .color-card .cn{ font-size: clamp(9px, 2.4vw, 13px); font-weight:900; color:#6d5896 }
+  .color-card.hit .color-dot{ animation: dotPop .6s ease }
+  @keyframes dotPop{ 0%{transform:scale(1)} 40%{transform:scale(1.16)} 100%{transform:scale(1)} }
+
+  /* ================= цифры ================= */
+  .num-grid{
+    display:grid; grid-template-columns: repeat(5, minmax(0,1fr));
+    gap: clamp(8px,1.3vh,15px); width:100%; max-width:840px; margin:0 auto;
+  }
+  .num-card{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+    padding:10px 4px; min-height: clamp(82px,12.5vh,142px);
+    border:3px solid #fff; border-radius:22px;
+    background: linear-gradient(165deg,#eef6ff,#fff 74%);
+    box-shadow: 0 8px 16px rgba(120,100,180,.15);
+    font:inherit; color:inherit; cursor:pointer;
+    transition: transform .12s ease;
+    -webkit-appearance:none;
+  }
+  .num-card:active{ transform: scale(.94) }
+  .num-digit{ font-size: clamp(28px, 7.2vw, 54px); font-weight:900; color:#5b3f8f; line-height:1 }
+  .num-dots{ display:flex; flex-wrap:wrap; justify-content:center; gap:3px; max-width:52px }
+  .num-dots i{ width:7px; height:7px; border-radius:50%; background:#7fb0ff; display:block }
+  .num-card.hit{ animation: happy .6s ease }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene" aria-hidden="true">
+  <div class="sun">☀️</div>
+  <div class="cloud c1">☁️</div>
+  <div class="cloud c2">☁️</div>
+  <div class="cloud c3">☁️</div>
+  <div class="hill"></div>
+  <div class="tulip t1">🌷</div>
+  <div class="tulip t2">🌼</div>
+  <div class="tulip t3">🌻</div>
+  <div class="tulip t4">🌷</div>
+</div>
+
+<header>
+  <button class="roundbtn" id="backBtn" type="button" aria-label="Назад" title="Назад" hidden>
+    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.6 5.4 8 12l6.6 6.6"/>
+    </svg>
+  </button>
+  <h1 id="title">Зверята</h1>
+  <p class="sub" id="subtitle">Выбери игру — и веселись!</p>
+</header>
+
+<main id="screens">
+  <section class="screen active" id="scr-home" aria-label="Игры">
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="screen" id="scr-animals" aria-label="Зверята">
+    <div class="animal-grid" id="animalGrid"></div>
+  </section>
+
+  <section class="screen" id="scr-guess" aria-label="Угадай по голосу">
+    <div class="guess-wrap">
+      <button class="listen" id="listenBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 9.4h3.3L12.2 5.5v13L7.3 14.6H4z"/>
+          <path d="M15.6 9.1a4.4 4.4 0 0 1 0 5.8"/>
+          <path d="M18.2 6.6a8 8 0 0 1 0 10.8"/>
+        </svg>
+        Послушать ещё раз
+      </button>
+      <div class="options" id="guessOptions"></div>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-piano" aria-label="Пианино">
+    <div class="piano" id="piano"></div>
+  </section>
+
+  <section class="screen" id="scr-hide" aria-label="Прятки">
+    <div class="hide-grid" id="hideGrid"></div>
+  </section>
+
+  <section class="screen" id="scr-bubbles" aria-label="Пузырьки">
+    <div class="bubble-area" id="bubbleArea"></div>
+  </section>
+
+  <section class="screen" id="scr-fireworks" aria-label="Салют">
+    <div class="fw-area" id="fwArea">
+      <div class="hint" id="fwHint">Нажимай на небо — будет салют!</div>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-eat" aria-label="Кто что ест">
+    <div class="eat-wrap">
+      <div class="eat-animal" id="eatAnimal">
+        <span class="eat-bubble" aria-hidden="true">Ням!</span>
+        <span class="eat-face" id="eatFace">🐰</span>
+        <span class="eat-name" id="eatName">Зайка хочет кушать</span>
+      </div>
+      <div class="eat-options" id="eatOptions"></div>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-memory" aria-label="Найди пару">
+    <div class="mem-grid" id="memGrid"></div>
+  </section>
+
+  <section class="screen" id="scr-colors" aria-label="Цвета">
+    <div class="color-grid" id="colorGrid"></div>
+  </section>
+
+  <section class="screen" id="scr-numbers" aria-label="Цифры">
+    <div class="num-grid" id="numGrid"></div>
+  </section>
+</main>
+
+<div class="bar">
+  <div class="count" aria-live="polite">❤️ <span class="num" id="count">0</span></div>
+  <button class="iconbtn" id="muteBtn" type="button" aria-pressed="false" aria-label="Выключить звук" title="Звук">
+    <svg class="ic-on" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9.4h3.3L12.2 5.5v13L7.3 14.6H4z"/>
+      <path d="M15.6 9.1a4.4 4.4 0 0 1 0 5.8"/>
+      <path d="M18.2 6.6a8 8 0 0 1 0 10.8"/>
+    </svg>
+    <svg class="ic-off" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9.4h3.3L12.2 5.5v13L7.3 14.6H4z"/>
+      <path d="M16 9.5l4 5"/>
+      <path d="M20 9.5l-4 5"/>
+    </svg>
+  </button>
+  <button class="iconbtn" id="fullBtn" type="button" aria-label="Во весь экран" title="Во весь экран">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9.2V5.8A1.8 1.8 0 0 1 5.8 4H9.2"/>
+      <path d="M14.8 4h3.4A1.8 1.8 0 0 1 20 5.8v3.4"/>
+      <path d="M20 14.8v3.4a1.8 1.8 0 0 1-1.8 1.8h-3.4"/>
+      <path d="M9.2 20H5.8A1.8 1.8 0 0 1 4 18.2v-3.4"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     ЗВУК — синтез в браузере, никаких файлов
+     ============================================================ */
+  var ctx = null, bus = null, noiseBuf = null;
+  var muted = false;
+
+  function audio() {
+    if (!ctx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      bus = ctx.createGain();
+      bus.gain.value = 0.85;
+      var comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -16;
+      comp.knee.value = 22;
+      comp.ratio.value = 5;
+      comp.attack.value = 0.004;
+      comp.release.value = 0.25;
+      bus.connect(comp);
+      comp.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  function getNoise(c) {
+    if (!noiseBuf) {
+      var len = Math.floor(c.sampleRate * 1.2);
+      noiseBuf = c.createBuffer(1, len, c.sampleRate);
+      var d = noiseBuf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    }
+    return noiseBuf;
+  }
+
+  function tone(o) {
+    if (muted) return;
+    var c = audio(); if (!c) return;
+    o = o || {};
+    var f     = Math.max(30, o.f || 440);
+    var to    = o.to ? Math.max(30, o.to) : 0;
+    var d     = o.d || 0.22;
+    var vol   = o.vol == null ? 0.2 : o.vol;
+    var delay = o.delay || 0;
+    var t0    = c.currentTime + delay;
+
+    var osc = c.createOscillator();
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(f, t0);
+    if (to) osc.frequency.exponentialRampToValueAtTime(to, t0 + d);
+
+    var node = osc;
+    if (o.filter) {
+      var bq = c.createBiquadFilter();
+      bq.type = o.filter;
+      bq.frequency.value = o.ff || 1200;
+      bq.Q.value = o.q == null ? 0.9 : o.q;
+      node.connect(bq);
+      node = bq;
+    }
+
+    if (o.am) {
+      var amGain = c.createGain();
+      amGain.gain.value = 1;
+      node.connect(amGain);
+      node = amGain;
+      var amLfo = c.createOscillator();
+      amLfo.frequency.value = o.am;
+      var amDepth = c.createGain();
+      amDepth.gain.value = o.amDepth == null ? 0.6 : o.amDepth;
+      amLfo.connect(amDepth);
+      amDepth.connect(amGain.gain);
+      amLfo.start(t0);
+      amLfo.stop(t0 + d + 0.06);
+    }
+
+    var g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + (o.attack || 0.012));
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    node.connect(g);
+    g.connect(bus);
+
+    if (o.vib) {
+      var lfo = c.createOscillator();
+      lfo.frequency.value = o.vib;
+      var lg = c.createGain();
+      lg.gain.value = o.vibDepth || 8;
+      lfo.connect(lg);
+      lg.connect(osc.frequency);
+      lfo.start(t0);
+      lfo.stop(t0 + d + 0.06);
+    }
+
+    osc.start(t0);
+    osc.stop(t0 + d + 0.08);
+  }
+
+  function hiss(o) {
+    if (muted) return;
+    var c = audio(); if (!c) return;
+    o = o || {};
+    var d = o.d || 0.18;
+    var t0 = c.currentTime + (o.delay || 0);
+
+    var src = c.createBufferSource();
+    src.buffer = getNoise(c);
+    src.loop = true;
+
+    var bq = c.createBiquadFilter();
+    bq.type = o.filter || 'lowpass';
+    bq.frequency.setValueAtTime(o.ff || 900, t0);
+    if (o.to) bq.frequency.exponentialRampToValueAtTime(Math.max(60, o.to), t0 + d);
+    bq.Q.value = o.q == null ? 0.9 : o.q;
+
+    var g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(o.vol == null ? 0.12 : o.vol, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+
+    src.connect(bq); bq.connect(g); g.connect(bus);
+    src.start(t0);
+    src.stop(t0 + d + 0.06);
+  }
+
+  var VOICES = {
+    cat: function (p) {
+      tone({ f:720*p,  to:1010*p, d:0.14, type:'sawtooth', vol:0.10, attack:0.025, filter:'lowpass', ff:2400 });
+      tone({ f:990*p,  to:430*p,  d:0.42, type:'sawtooth', vol:0.13, delay:0.12, attack:0.03, filter:'lowpass', ff:1800, vib:6, vibDepth:16 });
+    },
+    dog: function (p) {
+      tone({ f:430*p, to:175*p, d:0.13, type:'square', vol:0.13, filter:'bandpass', ff:820, q:1.6 });
+      tone({ f:400*p, to:170*p, d:0.13, type:'square', vol:0.11, delay:0.17, filter:'bandpass', ff:820, q:1.6 });
+    },
+    rabbit: function (p) {
+      tone({ f:1150*p, to:1500*p, d:0.09, type:'sine', vol:0.13 });
+      tone({ f:1320*p, to:1750*p, d:0.11, type:'sine', vol:0.11, delay:0.11 });
+    },
+    bear: function (p) {
+      tone({ f:185*p, to:118*p, d:0.5,  type:'sine',     vol:0.22, filter:'lowpass', ff:700, vib:5, vibDepth:6, attack:0.03 });
+      tone({ f:150*p, to:100*p, d:0.45, type:'triangle', vol:0.07, delay:0.04, filter:'lowpass', ff:520 });
+    },
+    panda: function (p) {
+      tone({ f:900*p,  to:1320*p, d:0.12, type:'sine', vol:0.14 });
+      tone({ f:1120*p, to:800*p,  d:0.16, type:'sine', vol:0.12, delay:0.12 });
+      hiss({ d:0.07, vol:0.05, ff:1800, filter:'bandpass', q:1.2, delay:0.3 });
+    },
+    fox: function (p) {
+      tone({ f:780*p, to:520*p, d:0.10, type:'square', vol:0.10, filter:'bandpass', ff:1100, q:2.2 });
+      tone({ f:840*p, to:545*p, d:0.10, type:'square', vol:0.09, delay:0.13, filter:'bandpass', ff:1100, q:2.2 });
+    },
+    frog: function (p) {
+      tone({ f:230*p, to:168*p, d:0.18, type:'sawtooth', vol:0.16, filter:'bandpass', ff:700, q:5, am:26, amDepth:0.55 });
+      tone({ f:210*p, to:152*p, d:0.20, type:'sawtooth', vol:0.12, delay:0.16, filter:'bandpass', ff:650, q:5, am:24, amDepth:0.55 });
+    },
+    pig: function (p) {
+      hiss({ d:0.16, vol:0.16, ff:430, to:210, q:1.3, filter:'lowpass' });
+      tone({ f:150*p, to:110*p, d:0.16, type:'sawtooth', vol:0.07, filter:'lowpass', ff:600 });
+      hiss({ d:0.14, vol:0.13, ff:380, to:190, delay:0.2, q:1.3, filter:'lowpass' });
+    },
+    cow: function (p) {
+      tone({ f:150*p, to:112*p, d:0.75, type:'sine',     vol:0.22, filter:'lowpass', ff:900, vib:5.5, vibDepth:5, attack:0.06 });
+      tone({ f:300*p, to:225*p, d:0.70, type:'triangle', vol:0.05, delay:0.03, filter:'lowpass', ff:1200, attack:0.08 });
+    },
+    sheep: function (p) {
+      tone({ f:395*p, to:300*p, d:0.5, type:'triangle', vol:0.16, filter:'lowpass', ff:2300, vib:16, vibDepth:28, attack:0.03, am:17, amDepth:0.4 });
+    },
+    duck: function (p) {
+      tone({ f:640*p, to:390*p, d:0.20, type:'sawtooth', vol:0.12, filter:'bandpass', ff:1300, q:3 });
+      tone({ f:600*p, to:360*p, d:0.18, type:'sawtooth', vol:0.10, delay:0.22, filter:'bandpass', ff:1200, q:3 });
+    },
+    penguin: function (p) {
+      tone({ f:880*p,  to:1500*p, d:0.12, type:'sine', vol:0.13 });
+      tone({ f:1000*p, to:1720*p, d:0.10, type:'sine', vol:0.11, delay:0.12 });
+    },
+    chick: function (p) {
+      tone({ f:1400*p, to:1900*p, d:0.07, type:'triangle', vol:0.11 });
+      tone({ f:1600*p, to:2100*p, d:0.07, type:'triangle', vol:0.09, delay:0.09 });
+    },
+
+    /* --- служебные звуки --- */
+    sparkle: function () {
+      var notes = [1046.5, 1318.5, 1568, 2093];
+      for (var i = 0; i < notes.length; i++) {
+        tone({ f: notes[i], d: 0.28, type:'triangle', vol:0.10, delay: i*0.075, attack:0.004 });
+      }
+    },
+    pop: function (p) {
+      var base = 480 + Math.random() * 260;
+      tone({ f: base*1.6, to: base*0.5, d:0.09, type:'sine', vol:0.2, attack:0.003 });
+      hiss({ d:0.05, vol:0.05, ff:2600, filter:'bandpass', q:1.4 });
+      tone({ f: base*2.6, to: base*2.1, d:0.15, type:'triangle', vol:0.05, delay:0.03 });
+    },
+    soft: function () {
+      tone({ f:330, to:250, d:0.16, type:'sine', vol:0.09, attack:0.02 });
+      tone({ f:250, to:200, d:0.22, type:'sine', vol:0.07, delay:0.13, attack:0.02 });
+    },
+    boom: function () {
+      hiss({ d:0.3, vol:0.2, ff:420, to:70, filter:'lowpass', q:1.1 });
+      tone({ f:120, to:48, d:0.35, type:'sine', vol:0.22, attack:0.005 });
+    },
+    note: function (f) {
+      tone({ f: f,     d:0.5,  type:'triangle', vol:0.17, attack:0.004, filter:'lowpass', ff:3600 });
+      tone({ f: f*2,   d:0.3,  type:'sine',     vol:0.055, attack:0.003 });
+      tone({ f: f*3.02,d:0.18, type:'sine',     vol:0.02,  attack:0.002 });
+    },
+    chomp: function () {
+      hiss({ d:0.08, vol:0.13, ff:1300, filter:'bandpass', q:1.3 });
+      tone({ f:190, to:120, d:0.09, type:'triangle', vol:0.10 });
+      hiss({ d:0.08, vol:0.11, ff:1100, filter:'bandpass', q:1.3, delay:0.16 });
+      tone({ f:175, to:105, d:0.09, type:'triangle', vol:0.09, delay:0.16 });
+    },
+    flip: function () {
+      tone({ f:620, to:940, d:0.07, type:'sine', vol:0.09, attack:0.004 });
+      hiss({ d:0.04, vol:0.03, ff:2200, filter:'bandpass', q:1.2 });
+    },
+    beep: function (f) {
+      var base = Math.max(160, Math.min(1600, f || 660));
+      tone({ f: base, d:0.13, type:'sine', vol:0.10, attack:0.005 });
+      tone({ f: base * 2, d:0.08, type:'sine', vol:0.03, attack:0.003 });
+    }
+  };
+
+  function play(voice, p) {
+    var fn = VOICES[voice];
+    if (!fn) return;
+    try { fn(p || 1); } catch (e) {}
+  }
+  function note(freq) { try { VOICES.note(freq); } catch (e) {} }
+  function beep(freq) { try { VOICES.beep(freq); } catch (e) {} }
+
+  /* ---------- голос (речь браузера) ---------- */
+  var ruVoice = null;
+
+  function pickRuVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    var list = [];
+    try { list = speechSynthesis.getVoices() || []; } catch (e) { return null; }
+    for (var i = 0; i < list.length; i++) {
+      var v = list[i];
+      if (/^ru[-_]/i.test(v.lang || '') && v.localService !== false) return v;
+    }
+    for (var j = 0; j < list.length; j++) {
+      if (/^ru[-_]/i.test(list[j].lang || '')) return list[j];
+    }
+    return null;
+  }
+
+  function say(text) {
+    if (muted) return;
+    if (!('speechSynthesis' in window)) return;
+    try {
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ru-RU';
+      u.rate = 0.88;
+      u.pitch = 1.12;
+      u.volume = 1;
+      if (!ruVoice) ruVoice = pickRuVoice();
+      if (ruVoice) u.voice = ruVoice;
+
+      var speaking = speechSynthesis.speaking || speechSynthesis.pending;
+      if (speaking) {
+        speechSynthesis.cancel();
+        setTimeout(function () {
+          if (muted) return;
+          try { speechSynthesis.speak(u); } catch (e) {}
+        }, 90);
+      } else {
+        speechSynthesis.speak(u);
+      }
+    } catch (e) {}
+  }
+
+  function hush() {
+    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) {}
+  }
+
+  if ('speechSynthesis' in window) {
+    try {
+      speechSynthesis.onvoiceschanged = function () { ruVoice = pickRuVoice(); };
+      ruVoice = pickRuVoice();
+    } catch (e) {}
+  }
+
+  /* ---------- данные для новых игр ---------- */
+  var FOODS = [
+    { animal:'🐰', who:'Зайка',     food:'🥕', what:'морковка' },
+    { animal:'🐻', who:'Мишка',     food:'🍯', what:'мёд' },
+    { animal:'🐼', who:'Панда',     food:'🎋', what:'бамбук' },
+    { animal:'🐱', who:'Котик',     food:'🐟', what:'рыбка' },
+    { animal:'🐶', who:'Пёсик',     food:'🦴', what:'косточка' },
+    { animal:'🐷', who:'Свинка',    food:'🌽', what:'кукуруза' },
+    { animal:'🐮', who:'Коровка',   food:'🌿', what:'травка' },
+    { animal:'🐑', who:'Овечка',    food:'🌾', what:'сено' },
+    { animal:'🦆', who:'Утёнок',    food:'🍞', what:'хлебушек' },
+    { animal:'🐧', who:'Пингвин',   food:'🐠', what:'рыбка' },
+    { animal:'🐸', who:'Лягушка',   food:'🪰', what:'мушка' },
+    { animal:'🐭', who:'Мышка',     food:'🧀', what:'сыр' },
+    { animal:'🐿️', who:'Белочка',   food:'🌰', what:'орешек' },
+    { animal:'🐨', who:'Коала',     food:'🍃', what:'листик' },
+    { animal:'🐵', who:'Обезьянка', food:'🍌', what:'банан' },
+    { animal:'🐔', who:'Курочка',   food:'🌾', what:'зёрнышки' }
+  ];
+
+  var COLORS = [
+    { n:'красный',    c:'#ff4d6d' },
+    { n:'оранжевый',  c:'#ff9f43' },
+    { n:'жёлтый',     c:'#ffd93d' },
+    { n:'зелёный',    c:'#4cd964' },
+    { n:'голубой',    c:'#4dc9f0' },
+    { n:'синий',      c:'#5266ff' },
+    { n:'фиолетовый', c:'#a05ce0' },
+    { n:'розовый',    c:'#ff7ab8' }
+  ];
+
+  var NUM_WORDS = ['один','два','три','четыре','пять','шесть','семь','восемь','девять','десять'];
+
+  /* ============================================================
+     УТИЛИТЫ
+     ============================================================ */
+  var BITS = ['💗','💖','✨','⭐','💫','🌸','🎉','💛','🌈','🫧'];
+  var countEl = document.getElementById('count');
+  var taps = 0;
+
+  function bump(n) {
+    taps += (n || 1);
+    countEl.textContent = String(taps);
+  }
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function spawnBits(x, y, n, big) {
+    n = n || 5;
+    for (var i = 0; i < n; i++) {
+      (function () {
+        var b = document.createElement('div');
+        b.className = 'bit';
+        b.textContent = BITS[Math.floor(Math.random() * BITS.length)];
+        b.style.fontSize = ((big ? 26 : 18) + Math.random() * (big ? 22 : 14)) + 'px';
+        b.style.left = (x + (Math.random() * 2 - 1) * (big ? 90 : 46)) + 'px';
+        b.style.top  = (y + (Math.random() * 2 - 1) * 20) + 'px';
+        b.style.setProperty('--dx', ((Math.random() * 2 - 1) * 60).toFixed(1) + 'px');
+        b.style.setProperty('--rot', ((Math.random() * 2 - 1) * 40).toFixed(1) + 'deg');
+        b.style.animation = 'bitUp ' + (700 + Math.random() * 600).toFixed(0) + 'ms cubic-bezier(.2,.75,.35,1) forwards';
+        document.body.appendChild(b);
+        setTimeout(function () { b.remove(); }, 1400);
+      })();
+    }
+  }
+
+  function rectCenter(el) {
+    var r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
+
+  /* ============================================================
+     ДАННЫЕ
+     ============================================================ */
+  var ANIMALS = [
+    { emoji:'🐱', name:'Котик',   say:'Мяу!',  tint:'#ffe3ef', voice:'cat'     },
+    { emoji:'🐶', name:'Пёсик',   say:'Гав!',  tint:'#e2f0ff', voice:'dog'     },
+    { emoji:'🐰', name:'Зайка',   say:'Прыг!', tint:'#ffeef6', voice:'rabbit'  },
+    { emoji:'🐻', name:'Мишка',   say:'Р-р-р', tint:'#ffeedd', voice:'bear'    },
+    { emoji:'🐼', name:'Панда',   say:'Ням!',  tint:'#eaf7e6', voice:'panda'   },
+    { emoji:'🦊', name:'Лисёнок', say:'Тяв!',  tint:'#ffe8d9', voice:'fox'     },
+    { emoji:'🐸', name:'Лягушка', say:'Ква!',  tint:'#e4f7da', voice:'frog'    },
+    { emoji:'🐷', name:'Свинка',  say:'Хрю!',  tint:'#ffe6ee', voice:'pig'     },
+    { emoji:'🐮', name:'Коровка', say:'Му-у!', tint:'#eef0ff', voice:'cow'     },
+    { emoji:'🐑', name:'Овечка',  say:'Бе-е!', tint:'#f3f1ff', voice:'sheep'   },
+    { emoji:'🦆', name:'Утёнок',  say:'Кря!',  tint:'#fff5d6', voice:'duck'    },
+    { emoji:'🐧', name:'Пингвин', say:'И-и!',  tint:'#e6f4ff', voice:'penguin' }
+  ];
+
+  var TILES = [
+    { id:'animals',   em:'🐱', label:'Зверята',     tint:'#ffe3ef' },
+    { id:'hide',      em:'🌿', label:'Прятки',      tint:'#e4f7da' },
+    { id:'eat',       em:'🥕', label:'Кто что ест', tint:'#fff0d9' },
+    { id:'memory',    em:'🐾', label:'Найди пару',  tint:'#ffe8d9' },
+    { id:'guess',     em:'👂', label:'Угадай!',     tint:'#ffeef6' },
+    { id:'piano',     em:'🎹', label:'Пианино',     tint:'#e2f0ff' },
+    { id:'bubbles',   em:'🫧', label:'Пузырьки',    tint:'#e9e2ff' },
+    { id:'fireworks', em:'✨', label:'Салют',       tint:'#fff5d6' },
+    { id:'colors',    em:'🎨', label:'Цвета',       tint:'#ffe9f2' },
+    { id:'numbers',   em:'🔢', label:'Цифры',       tint:'#e6f4ff' }
+  ];
+
+  var META = {
+    home:      { title:'Нурия',    sub:'Привет! Выбери, во что поиграем' },
+    animals:   { title:'Зверята',  sub:'Нажми на зверюшку — она скажет «привет»!' },
+    hide:      { title:'Прятки',   sub:'Кто спрятался под листиком? Нажми!' },
+    guess:     { title:'Угадай!',  sub:'Послушай голос и найди зверюшку' },
+    piano:     { title:'Пианино',  sub:'Нажимай на клавиши — будет музыка!' },
+    bubbles:   { title:'Пузырьки', sub:'Лопай пузырьки — внутри зверята!' },
+    fireworks: { title:'Салют',    sub:'Нажимай на небо — будет салют!' },
+    eat:       { title:'Кто что ест', sub:'Покорми зверюшку — выбери еду' },
+    memory:    { title:'Найди пару',  sub:'Открой две карточки и найди одинаковых' },
+    colors:    { title:'Цвета',       sub:'Нажми на кружок — услышишь цвет' },
+    numbers:   { title:'Цифры',       sub:'Нажми на цифру — услышишь число' }
+  };
+
+  /* ============================================================
+     НАВИГАЦИЯ
+     ============================================================ */
+  var titleEl = document.getElementById('title');
+  var subEl   = document.getElementById('subtitle');
+  var backBtn = document.getElementById('backBtn');
+  var current = 'home';
+  var cache = {};
+
+  function scr(id) {
+    if (!cache[id]) cache[id] = document.getElementById('scr-' + id);
+    return cache[id];
+  }
+
+  var GAMES = {
+    animals:   { build: buildAnimals },
+    hide:      { build: buildHide,      enter: enterHide,      leave: leaveHide },
+    guess:     { build: buildGuess,     enter: enterGuess,     leave: leaveGuess },
+    piano:     { build: buildPiano },
+    bubbles:   { build: buildBubbles,   enter: enterBubbles,   leave: leaveBubbles },
+    fireworks: { build: buildFireworks, enter: enterFireworks, leave: leaveFireworks },
+    eat:       { enter: eatEnter,       leave: eatLeave },
+    memory:    { enter: memEnter,       leave: memLeave },
+    colors:    { build: buildColors },
+    numbers:   { build: buildNumbers }
+  };
+
+  function go(id) {
+    var prev = GAMES[current];
+    if (prev && prev.leave) prev.leave();
+
+    var oldEl = scr(current);
+    if (oldEl) oldEl.classList.remove('active');
+
+    current = id;
+    var meta = META[id] || META.home;
+
+    var el = scr(id);
+    el.classList.add('active');
+
+    if (id === 'home') {
+      titleEl.innerHTML = '<span class="name-glow">Нурия</span>';
+    } else {
+      titleEl.textContent = meta.title;
+    }
+    subEl.textContent = meta.sub;
+    backBtn.hidden = (id === 'home');
+    document.title = (id === 'home') ? 'Нурия — игры и звуки' : (meta.title + ' — Нурия');
+    window.scrollTo(0, 0);
+
+    var g = GAMES[id];
+    if (g && g.build) g.build();
+    if (g && g.enter) g.enter();
+  }
+
+  /* ============================================================
+     ГЛАВНЫЙ ЭКРАН
+     ============================================================ */
+  function buildHome() {
+    var box = document.getElementById('tiles');
+    if (box.dataset.built) return;
+    box.dataset.built = '1';
+
+    TILES.forEach(function (t) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tile';
+      b.style.setProperty('--tint', t.tint);
+      b.innerHTML = '<span class="em" aria-hidden="true">' + t.em + '</span>' +
+                    '<span class="lbl">' + t.label + '</span>';
+      b.setAttribute('aria-label', t.label);
+      b.addEventListener('click', function () {
+        audio();
+        play('sparkle');
+        go(t.id);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  /* ============================================================
+     ИГРА 1 — ЗВЕРЯТА
+     ============================================================ */
+  function buildAnimals() {
+    var grid = document.getElementById('animalGrid');
+    if (grid.dataset.built) return;
+    grid.dataset.built = '1';
+
+    ANIMALS.forEach(function (a) {
+      var card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'card';
+      card.style.setProperty('--tint', a.tint);
+      card.setAttribute('aria-label', a.name + ': ' + a.say);
+
+      var bubble = document.createElement('span');
+      bubble.className = 'bubble-say';
+      bubble.setAttribute('aria-hidden', 'true');
+      bubble.textContent = a.say;
+
+      var face = document.createElement('span');
+      face.className = 'face';
+      face.setAttribute('aria-hidden', 'true');
+      face.textContent = a.emoji;
+
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = a.name;
+
+      card.appendChild(bubble);
+      card.appendChild(face);
+      card.appendChild(name);
+
+      card.addEventListener('click', function () {
+        audio();
+        play(a.voice, 0.94 + Math.random() * 0.13);
+
+        card.classList.remove('pop');
+        void card.offsetWidth;
+        card.classList.add('pop');
+        setTimeout(function () { card.classList.remove('pop'); }, 1000);
+
+        var c = rectCenter(card);
+        spawnBits(c.x, c.y, 5);
+        bump();
+
+        if (taps % 15 === 0) celebrate();
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  function celebrate() {
+    play('sparkle');
+    for (var k = 0; k < 4; k++) {
+      (function (k) {
+        setTimeout(function () {
+          spawnBits(
+            window.innerWidth * (0.2 + Math.random() * 0.6),
+            window.innerHeight * (0.25 + Math.random() * 0.4),
+            6, true
+          );
+        }, k * 160);
+      })(k);
+    }
+  }
+
+  /* ============================================================
+     ИГРА 2 — ПРЯТКИ
+     ============================================================ */
+  var HIDE = { cards: [], found: 0, busy: false, timer: null };
+
+  function buildHide() {
+    var grid = document.getElementById('hideGrid');
+    if (grid.dataset.built) return;
+    grid.dataset.built = '1';
+
+    for (var i = 0; i < 6; i++) {
+      (function () {
+        var card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'bush';
+        card.setAttribute('aria-label', 'Найди зверюшку');
+
+        var who = document.createElement('span');
+        who.className = 'who';
+        who.setAttribute('aria-hidden', 'true');
+        who.textContent = '❓';
+
+        var cover = document.createElement('span');
+        cover.className = 'cover';
+        cover.setAttribute('aria-hidden', 'true');
+        cover.textContent = pick(['🌿','🍃','🌱','🪴']);
+
+        card.appendChild(who);
+        card.appendChild(cover);
+        card.addEventListener('click', function () { openBush(card, who, cover); });
+
+        grid.appendChild(card);
+        HIDE.cards.push({ el: card, who: who, cover: cover });
+      })();
+    }
+  }
+
+  function resetHide() {
+    HIDE.found = 0;
+    HIDE.busy = false;
+    clearTimeout(HIDE.timer);
+    HIDE.cards.forEach(function (c) {
+      c.el.classList.remove('open');
+      c.who.textContent = '❓';
+      c.cover.textContent = pick(['🌿','🍃','🌱','🪴']);
+    });
+  }
+
+  function enterHide() { resetHide(); }
+
+  function leaveHide() {
+    clearTimeout(HIDE.timer);
+    resetHide();
+  }
+
+  function openBush(card, who, cover) {
+    if (HIDE.busy || card.classList.contains('open')) return;
+    audio();
+
+    var a = pick(ANIMALS);
+    who.textContent = a.emoji;
+    cover.textContent = pick(['🌿','🍃','🌱','🪴']);
+    card.classList.add('open');
+
+    play(a.voice, 0.94 + Math.random() * 0.13);
+    var c = rectCenter(card);
+    spawnBits(c.x, c.y, 6, true);
+    bump();
+
+    HIDE.found += 1;
+    if (HIDE.found >= HIDE.cards.length) {
+      HIDE.busy = true;
+      HIDE.timer = setTimeout(function () {
+        play('sparkle');
+        celebrate();
+        HIDE.timer = setTimeout(resetHide, 1400);
+      }, 350);
+    }
+  }
+
+  /* ============================================================
+     ИГРА 3 — УГАДАЙ ПО ГОЛОСУ
+     ============================================================ */
+  var GUESS = { target: null, busy: false, timer: null };
+
+  function buildGuess() {
+    var wrap = document.getElementById('guessOptions');
+    if (wrap.dataset.built) return;
+    wrap.dataset.built = '1';
+
+    document.getElementById('listenBtn').addEventListener('click', function () {
+      audio();
+      if (GUESS.target) play(GUESS.target.voice);
+    });
+  }
+
+  function enterGuess() {
+    GUESS.busy = false;
+    nextGuessRound();
+  }
+
+  function leaveGuess() {
+    clearTimeout(GUESS.timer);
+    GUESS.busy = true;
+  }
+
+  function nextGuessRound() {
+    var opts = document.getElementById('guessOptions');
+    if (!opts) return;
+
+    GUESS.busy = false;
+    var target = pick(ANIMALS);
+    GUESS.target = target;
+
+    var others = ANIMALS.filter(function (a) { return a.voice !== target.voice; });
+    shuffle(others);
+    var three = shuffle([target, others[0], others[1]]);
+
+    opts.innerHTML = '';
+    three.forEach(function (a) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt';
+      b.style.setProperty('--tint', a.tint);
+      b.setAttribute('aria-label', a.name);
+      b.innerHTML = '<span class="oe" aria-hidden="true">' + a.emoji + '</span>' +
+                    '<span class="on">' + a.name + '</span>';
+      b.addEventListener('click', function () { guessPick(a, b); });
+      opts.appendChild(b);
+    });
+
+    clearTimeout(GUESS.timer);
+    GUESS.timer = setTimeout(function () { play(target.voice); }, 420);
+  }
+
+  function guessPick(a, btn) {
+    if (GUESS.busy || !GUESS.target) return;
+
+    if (a.voice === GUESS.target.voice) {
+      GUESS.busy = true;
+      audio();
+      btn.classList.add('correct');
+      var sibs = btn.parentNode.children;
+      for (var i = 0; i < sibs.length; i++) {
+        if (sibs[i] !== btn) sibs[i].classList.add('off');
+      }
+      play(GUESS.target.voice);
+      setTimeout(function () { play('sparkle'); }, 260);
+      var c = rectCenter(btn);
+      spawnBits(c.x, c.y, 10, true);
+      bump(2);
+      clearTimeout(GUESS.timer);
+      GUESS.timer = setTimeout(nextGuessRound, 1600);
+    } else {
+      btn.classList.add('wrong');
+      setTimeout(function () { btn.classList.remove('wrong'); }, 500);
+      play('soft');
+      clearTimeout(GUESS.timer);
+      GUESS.timer = setTimeout(function () { play(GUESS.target.voice); }, 450);
+    }
+  }
+
+  /* ============================================================
+     ИГРА 4 — ПИАНИНО
+     ============================================================ */
+  var KEYS = [
+    { e:'🐤', n:261.63, c:'#ffe9c9' },
+    { e:'🐰', n:293.66, c:'#ffe0ee' },
+    { e:'🐱', n:329.63, c:'#ffd9e0' },
+    { e:'🐸', n:392.00, c:'#dff5cf' },
+    { e:'🦆', n:440.00, c:'#fff4c9' },
+    { e:'🐑', n:523.25, c:'#e6ecff' },
+    { e:'🐮', n:587.33, c:'#e2f6ff' },
+    { e:'🐧', n:659.25, c:'#e9e2ff' }
+  ];
+
+  function buildPiano() {
+    var box = document.getElementById('piano');
+    if (box.dataset.built) return;
+    box.dataset.built = '1';
+
+    KEYS.forEach(function (k) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'key';
+      b.style.setProperty('--k', k.c);
+      b.setAttribute('aria-label', 'Клавиша ' + k.e);
+      b.innerHTML = '<span class="ke" aria-hidden="true">' + k.e + '</span><span class="dot" aria-hidden="true"></span>';
+
+      function hit() {
+        audio();
+        note(k.n);
+        b.classList.remove('hit');
+        void b.offsetWidth;
+        b.classList.add('hit');
+        setTimeout(function () { b.classList.remove('hit'); }, 160);
+        var c = rectCenter(b);
+        spawnBits(c.x, c.y, 2);
+        bump();
+      }
+      b.addEventListener('pointerdown', function (e) { e.preventDefault(); hit(); });
+      b.addEventListener('click', function (e) { e.preventDefault(); });
+      box.appendChild(b);
+    });
+  }
+
+  /* ============================================================
+     ИГРА 5 — ПУЗЫРЬКИ
+     ============================================================ */
+  var BUB = { timer: null, area: null, max: 7, count: 0 };
+
+  function buildBubbles() {
+    BUB.area = document.getElementById('bubbleArea');
+    if (BUB.area.dataset.built) return;
+    BUB.area.dataset.built = '1';
+  }
+
+  function enterBubbles() {
+    leaveBubbles();
+    BUB.area = document.getElementById('bubbleArea');
+    setTimeout(function () { for (var i = 0; i < 3; i++) spawnBubble(); }, 120);
+    BUB.timer = setInterval(spawnBubble, 560);
+  }
+
+  function leaveBubbles() {
+    clearInterval(BUB.timer);
+    BUB.timer = null;
+    if (BUB.area) BUB.area.innerHTML = '';
+  }
+
+  function spawnBubble() {
+    var area = BUB.area;
+    if (!area || !area.isConnected) return;
+    if (area.children.length >= BUB.max) return;
+
+    var a = pick(ANIMALS);
+    var size = 62 + Math.random() * 46;
+    var left = Math.random() * Math.max(0, area.clientWidth - size);
+    var h = area.clientHeight;
+    var dist = h + size + 240;
+    var dur = (7000 + Math.random() * 5000) * (h / 480);
+
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'bubble';
+    b.setAttribute('aria-label', 'Лопнуть пузырёк');
+    b.textContent = a.emoji;
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    b.style.fontSize = Math.round(size * 0.44) + 'px';
+    b.style.left = left + 'px';
+    b.style.bottom = '-' + (size + 80) + 'px';
+    area.appendChild(b);
+
+    var anim = b.animate(
+      [{ transform: 'translateY(0)' }, { transform: 'translateY(-' + dist + 'px)' }],
+      { duration: dur, easing: 'linear', fill: 'forwards' }
+    );
+    anim.onfinish = function () { if (b.parentNode) b.remove(); };
+
+    b.addEventListener('pointerdown', function (ev) {
+      ev.preventDefault();
+      if (b.dataset.popped) return;
+      b.dataset.popped = '1';
+      try { anim.cancel(); } catch (e) {}
+      var r = b.getBoundingClientRect();
+      b.remove();
+
+      play('pop');
+      setTimeout(function () { play(a.voice, 0.94 + Math.random() * 0.13); }, 80);
+      spawnBits(r.left + r.width / 2, r.top + r.height / 2, 4);
+      bump();
+    });
+  }
+
+  /* ============================================================
+     ИГРА 6 — САЛЮТ
+     ============================================================ */
+  var FW = { timer: null, area: null, last: 0 };
+  var FW_COLORS = ['#ffb703','#ff5d8f','#25a9f5','#3fcf72','#9b6bff','#ff7a45','#ffffff'];
+
+  function buildFireworks() {
+    var area = document.getElementById('fwArea');
+    if (area.dataset.built) return;
+    area.dataset.built = '1';
+
+    area.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      fireworksAt(e.clientX, e.clientY);
+      var hint = document.getElementById('fwHint');
+      if (hint) hint.style.opacity = '0';
+    });
+  }
+
+  function enterFireworks() {
+    clearInterval(FW.timer);
+    FW.timer = setInterval(function () {
+      if (!document.getElementById('scr-fireworks').classList.contains('active')) return;
+      var area = document.getElementById('fwArea');
+      if (!area) return;
+      var r = area.getBoundingClientRect();
+      fireworksAt(
+        r.left + r.width * (0.18 + Math.random() * 0.64),
+        r.top + r.height * (0.18 + Math.random() * 0.55),
+        true
+      );
+    }, 2300);
+  }
+
+  function leaveFireworks() {
+    clearInterval(FW.timer);
+    FW.timer = null;
+  }
+
+  function fireworksAt(x, y, quiet) {
+    audio();
+    var now = Date.now();
+    if (now - FW.last < 90) return;
+    FW.last = now;
+
+    play('boom');
+    setTimeout(function () { play('sparkle'); }, 140);
+
+    var col = pick(FW_COLORS);
+    var col2 = pick(FW_COLORS);
+
+    var n = 16;
+    for (var i = 0; i < n; i++) {
+      var p = document.createElement('i');
+      p.className = 'spark';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      var size = 22 + Math.random() * 18;
+      p.style.width = p.style.height = size + 'px';
+      var c = Math.random() < 0.72 ? col : col2;
+      p.style.background = c;
+      p.style.boxShadow = '0 0 10px ' + c;
+      var ang = (Math.PI * 2 * i) / n + Math.random() * 0.35;
+      var dist = 90 + Math.random() * 120;
+      p.style.setProperty('--tx', (Math.cos(ang) * dist).toFixed(1) + 'px');
+      p.style.setProperty('--ty', (Math.sin(ang) * dist).toFixed(1) + 'px');
+      p.style.animationDuration = (620 + Math.random() * 420).toFixed(0) + 'ms';
+      document.body.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 1200); })(p);
+    }
+
+    // эмодзи-искры разлетаются вместе с точками
+    var em = ['✨','⭐','💫','🌟','💖','🎆','🌈'];
+    for (var j = 0; j < 8; j++) {
+      var q = document.createElement('i');
+      q.className = 'spark';
+      q.textContent = em[j % em.length];
+      q.style.left = x + 'px';
+      q.style.top = y + 'px';
+      q.style.fontSize = (30 + Math.random() * 18).toFixed(0) + 'px';
+      q.style.lineHeight = '1';
+      q.style.background = 'none';
+      q.style.boxShadow = 'none';
+      var a2 = (Math.PI * 2 * j) / 8 + Math.random() * 0.5;
+      var d2 = 70 + Math.random() * 120;
+      q.style.setProperty('--tx', (Math.cos(a2) * d2).toFixed(1) + 'px');
+      q.style.setProperty('--ty', (Math.sin(a2) * d2).toFixed(1) + 'px');
+      q.style.animationDuration = (800 + Math.random() * 400).toFixed(0) + 'ms';
+      document.body.appendChild(q);
+      (function (el) { setTimeout(function () { el.remove(); }, 1400); })(q);
+    }
+
+    if (!quiet) bump();
+  }
+
+  /* ============================================================
+     ИГРА 7 — КТО ЧТО ЕСТ
+     ============================================================ */
+  var EAT = { target: null, busy: false, timer: null, speak: null, last: null };
+
+  function eatEnter() {
+    clearTimeout(EAT.timer);
+    clearTimeout(EAT.speak);
+    nextEatRound(true);
+  }
+
+  function eatLeave() {
+    clearTimeout(EAT.timer);
+    clearTimeout(EAT.speak);
+    hush();
+  }
+
+  function nextEatRound(immediate) {
+    var opts = document.getElementById('eatOptions');
+    if (!opts) return;
+
+    EAT.busy = false;
+    var t = pick(FOODS);
+    var guard = 0;
+    while (EAT.last && t.food === EAT.last.food && guard++ < 12) t = pick(FOODS);
+    EAT.last = t;
+    EAT.target = t;
+
+    var face = document.getElementById('eatFace');
+    var name = document.getElementById('eatName');
+    if (face) face.textContent = t.animal;
+    if (name) name.textContent = t.who + ' хочет кушать';
+
+    var others = FOODS.filter(function (f) { return f.food !== t.food; });
+    shuffle(others);
+    var three = shuffle([t, others[0], others[1]]);
+
+    opts.innerHTML = '';
+    three.forEach(function (f) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'eat-opt';
+      b.setAttribute('aria-label', f.what);
+      b.innerHTML = '<span class="ef" aria-hidden="true">' + f.food + '</span>' +
+                    '<span class="en">' + f.what + '</span>';
+      b.addEventListener('click', function () { eatPick(f, b); });
+      opts.appendChild(b);
+    });
+
+    clearTimeout(EAT.speak);
+    if (immediate) {
+      say(t.who + ' хочет кушать');
+    } else {
+      EAT.speak = setTimeout(function () { say(t.who + ' хочет кушать'); }, 450);
+    }
+  }
+
+  function eatPick(f, btn) {
+    if (EAT.busy || !EAT.target) return;
+    audio();
+
+    if (f.food === EAT.target.food) {
+      EAT.busy = true;
+      btn.classList.add('good');
+
+      play('chomp');
+      setTimeout(function () { play(EAT.target.voice); }, 280);
+
+      var animal = document.getElementById('eatAnimal');
+      if (animal) {
+        animal.classList.remove('yum');
+        void animal.offsetWidth;
+        animal.classList.add('yum');
+        setTimeout(function () { animal.classList.remove('yum'); }, 1300);
+        var c = rectCenter(animal);
+        spawnBits(c.x, c.y, 8, true);
+      }
+      bump(2);
+      clearTimeout(EAT.speak);
+      EAT.speak = setTimeout(function () { say('Спасибо! Ням-ням!'); }, 700);
+
+      clearTimeout(EAT.timer);
+      EAT.timer = setTimeout(nextEatRound, 2200);
+    } else {
+      btn.classList.add('bad');
+      setTimeout(function () { btn.classList.remove('bad'); }, 500);
+      play('soft');
+      clearTimeout(EAT.speak);
+      EAT.speak = setTimeout(function () { say('Это не ' + f.what); }, 400);
+    }
+  }
+
+  /* ============================================================
+     ИГРА 8 — НАЙДИ ПАРУ
+     ============================================================ */
+  var MEM = { busy: false, open: [], found: 0, timer: null, pairs: 3 };
+
+  function memEnter() {
+    clearTimeout(MEM.timer);
+    newMemoryRound();
+  }
+
+  function memLeave() {
+    clearTimeout(MEM.timer);
+    hush();
+  }
+
+  function newMemoryRound() {
+    var grid = document.getElementById('memGrid');
+    if (!grid) return;
+
+    clearTimeout(MEM.timer);
+    MEM.busy = false;
+    MEM.open = [];
+    MEM.found = 0;
+
+    var pool = shuffle(ANIMALS.slice()).slice(0, MEM.pairs);
+    var cards = [];
+    pool.forEach(function (a) { cards.push(a); cards.push(a); });
+    shuffle(cards);
+
+    grid.innerHTML = '';
+    cards.forEach(function (a) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mem-card';
+      b.setAttribute('aria-label', 'Карточка');
+      b.innerHTML = '<span class="mem-back" aria-hidden="true">🐾</span>' +
+                    '<span class="mem-face" aria-hidden="true">' + a.emoji + '</span>';
+      b.addEventListener('click', function () { memTap(b, a); });
+      grid.appendChild(b);
+    });
+  }
+
+  function memTap(el, a) {
+    if (MEM.busy || el.classList.contains('open') || el.classList.contains('matched')) return;
+    audio();
+
+    el.classList.add('open');
+    play('flip');
+    setTimeout(function () { play(a.voice); }, 140);
+
+    MEM.open.push({ el: el, a: a });
+    if (MEM.open.length < 2) return;
+
+    var x = MEM.open[0], y = MEM.open[1];
+    MEM.open = [];
+
+    if (x.a.voice === y.a.voice) {
+      x.el.classList.add('matched');
+      y.el.classList.add('matched');
+      setTimeout(function () { play('sparkle'); }, 260);
+      var c = rectCenter(y.el);
+      spawnBits(c.x, c.y, 6, true);
+      bump(2);
+
+      MEM.found += 1;
+      if (MEM.found >= MEM.pairs) {
+        MEM.busy = true;
+        MEM.timer = setTimeout(function () {
+          celebrate();
+          MEM.timer = setTimeout(newMemoryRound, 1700);
+        }, 550);
+      }
+    } else {
+      MEM.busy = true;
+      MEM.timer = setTimeout(function () {
+        x.el.classList.remove('open');
+        y.el.classList.remove('open');
+        MEM.open = [];
+        MEM.busy = false;
+        play('soft');
+      }, 950);
+    }
+  }
+
+  /* ============================================================
+     ИГРА 9 — ЦВЕТА
+     ============================================================ */
+  function buildColors() {
+    var grid = document.getElementById('colorGrid');
+    if (!grid || grid.dataset.built) return;
+    grid.dataset.built = '1';
+
+    COLORS.forEach(function (c) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'color-card';
+      b.setAttribute('aria-label', c.n);
+      b.innerHTML = '<span class="color-dot" aria-hidden="true" style="--c:' + c.c + '"></span>' +
+                    '<span class="cn">' + c.n + '</span>';
+      b.addEventListener('click', function () { colorTap(b, c); });
+      grid.appendChild(b);
+    });
+  }
+
+  function colorTap(b, c) {
+    audio();
+    b.classList.remove('hit');
+    void b.offsetWidth;
+    b.classList.add('hit');
+    beep(560 + Math.random() * 120);
+    say(c.n);
+    var r = rectCenter(b);
+    spawnBits(r.x, r.y, 3);
+    bump();
+  }
+
+  /* ============================================================
+     ИГРА 10 — ЦИФРЫ
+     ============================================================ */
+  function buildNumbers() {
+    var grid = document.getElementById('numGrid');
+    if (!grid || grid.dataset.built) return;
+    grid.dataset.built = '1';
+
+    for (var n = 1; n <= 10; n++) {
+      (function (n) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'num-card';
+        b.setAttribute('aria-label', NUM_WORDS[n - 1]);
+        var dots = '';
+        for (var i = 0; i < n; i++) dots += '<i></i>';
+        b.innerHTML = '<span class="num-digit">' + n + '</span>' +
+                      '<span class="num-dots" aria-hidden="true">' + dots + '</span>';
+        b.addEventListener('click', function () { numTap(b, n); });
+        grid.appendChild(b);
+      })(n);
+    }
+  }
+
+  function numTap(b, n) {
+    audio();
+    b.classList.remove('hit');
+    void b.offsetWidth;
+    b.classList.add('hit');
+
+    for (var i = 0; i < n; i++) {
+      (function (i) {
+        setTimeout(function () { beep(520 + i * 55); }, i * 115);
+      })(i);
+    }
+    setTimeout(function () { say(NUM_WORDS[n - 1]); }, 150 + n * 115);
+    bump();
+  }
+
+  /* ============================================================
+     КНОПКИ ПАНЕЛИ
+     ============================================================ */
+  var muteBtn = document.getElementById('muteBtn');
+  var fullBtn = document.getElementById('fullBtn');
+
+  muteBtn.addEventListener('click', function () {
+    muted = !muted;
+    if (muted) hush();
+    muteBtn.classList.toggle('off', muted);
+    muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+    muteBtn.setAttribute('aria-label', muted ? 'Включить звук' : 'Выключить звук');
+    if (!muted) { audio(); play('sparkle'); }
+  });
+
+  fullBtn.addEventListener('click', function () {
+    var el = document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      var req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req) { try { req.call(el); } catch (e) {} }
+    } else {
+      var exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) { try { exit.call(document); } catch (e) {} }
+    }
+  });
+
+  backBtn.addEventListener('click', function () {
+    play('pop');
+    go('home');
+  });
+
+  document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+  document.addEventListener('dblclick', function (e) { e.preventDefault(); }, { passive: false });
+  document.addEventListener('contextmenu', function (e) {
+    if (e.target.closest && e.target.closest('button')) e.preventDefault();
+  });
+
+  /* ============================================================
+     СТАРТ
+     ============================================================ */
+  buildHome();
+  go('home');
+})();
+</script>
+</body>
+</html>
