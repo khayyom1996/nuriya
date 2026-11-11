@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Маленький мир Нурии: десять добрых игр со зверятами, цветами, музыкой и маленькими открытиями.">
 <meta name="theme-color" content="#ffd9ec">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -541,6 +542,108 @@
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important }
   }
+  /* Маленький мир Нурии — мягкая бумага, игрушки и сказочный сад */
+  :root { --ink:#554368; --rose:#d75c88; --paper:#fffaf3; }
+  body { background:radial-gradient(circle at 1px 1px,#d5bba52b 1px,transparent 1.5px) 0 0/22px 22px, #fffaf3; }
+  .scene { opacity:.25; }
+  .scene .sun,.scene .cloud,.scene .tulip { display:none; }
+  .hill { background:#dfebd5; height:200px; bottom:-160px; box-shadow:none; }
+  header { width:100%; max-width:1180px; margin:0 auto; padding:28px 72px 20px; min-height:104px; }
+  h1 { font-size:30px; color:var(--ink); text-shadow:none; letter-spacing:-1px; }
+  .sub { color:#8b7b91; font-size:14px; font-weight:600; text-shadow:none; }
+  body[data-screen="home"] header { text-align:left; padding:26px 24px 20px 82px; min-height:90px; }
+  body[data-screen="home"] header::before { content:'✿'; position:absolute; left:24px; top:25px; width:44px; height:44px; display:grid; place-items:center; color:#fff; background:#e994b0; border-radius:16px; font-size:36px; transform:rotate(-9deg); }
+  body[data-screen="home"] h1 { font-size:23px; letter-spacing:-.7px; }
+  body[data-screen="home"] .sub { margin-top:2px; font-size:11px; letter-spacing:.2px; }
+  .name-glow { color:var(--ink); text-shadow:none; letter-spacing:0; }
+  .header-note { display:none; }
+  body[data-screen="home"] .header-note { display:block; position:absolute; right:26px; top:37px; color:#9d8b9b; font-size:12px; font-weight:650; }
+  .roundbtn { top:28px; left:24px; background:white; box-shadow:0 4px 0 #e9deeb; }
+  #screens { flex:1; }
+  .screen { max-width:1180px; padding:20px 24px 120px; justify-content:flex-start; }
+  .screen:not(#scr-home) { padding-top:30px; }
+  #scr-home { padding-top:0; }
+  .welcome { position:relative; display:grid; grid-template-columns:1fr 1fr; align-items:center; min-height:300px; padding:30px 42px; border:3px solid white; border-radius:38px; background:#f4eafb; background:linear-gradient(110deg,#f9eafa,#eeeafb 65%,#e8f3f0); overflow:hidden; box-shadow:0 7px 0 #eee5ed; }
+  .welcome::after { content:''; width:170px; height:170px; border:1px dashed #d8c2e3; border-radius:50%; position:absolute; left:-100px; bottom:-90px; }
+  .welcome-copy { position:relative; z-index:1; }
+  .eyebrow { display:inline-block; padding:7px 12px; border-radius:30px; background:#ffffffb8; color:#927a9e; font-size:11px; font-weight:800; letter-spacing:1.3px; }
+  .welcome h2 { font-size:clamp(34px,4.4vw,54px); font-weight:850; letter-spacing:-2px; line-height:1.12; margin:16px 0 12px; }
+  .welcome h2 span { color:#d86796; }
+  .welcome p { color:#8a7895; font-size:15px; font-weight:550; line-height:1.7; margin:0; }
+  .welcome-art { width:100%; height:270px; overflow:visible; }
+  .art-float { animation: gentleFloat 6s ease-in-out infinite; transform-origin:center; }
+  @keyframes gentleFloat { 50% { transform:translateY(-5px) rotate(1deg); } }
+  .play-heading { display:flex; align-items:center; justify-content:space-between; margin:36px 4px 18px; gap:12px; }
+  .play-heading h2 { font-size:22px; letter-spacing:-.6px; margin:0; }
+  .play-heading p { margin:5px 0 0; color:#a18e9b; font-size:13px; }
+  .game-count { white-space:nowrap; font-size:11px; font-weight:750; color:#9f879e; padding:8px 13px; border-radius:20px; border:1px solid #e9dfe6; background:#fffdf9; }
+  .tiles { grid-template-columns:repeat(5,minmax(0,1fr)); max-width:none; gap:18px; }
+  .tile { --accent:#bc7790; min-height:188px; padding:19px 12px 17px; border:3px solid white; border-radius:28px; background:var(--tint); box-shadow:0 6px 0 var(--edge,#ead9e0),0 10px 20px #80628308; transition:transform .2s ease,box-shadow .2s ease; overflow:visible; }
+  .tile::before { content:'✦'; position:absolute; top:13px; right:16px; font-size:17px; color:var(--accent); opacity:.45; }
+  .tile .em { display:grid; place-items:center; width:83px; height:83px; border-radius:29px; background:#ffffff78; font-size:52px; animation:none; filter:none; transform:rotate(-5deg); box-shadow:inset 0 2px 0 #fff9; margin-bottom:8px; transition:transform .25s ease; }
+  .tile:nth-child(even) .em { transform:rotate(5deg); }
+  .tile .lbl { color:var(--ink); font-size:15px; font-weight:850; letter-spacing:-.3px; margin:4px 0 0; }
+  .tile .tile-sub { color:#86758b; font-size:11px; margin-top:6px; line-height:1.3; }
+  .tile .tile-go { display:none; }
+  @media (hover:hover) { .tile:hover { transform:translateY(-5px); box-shadow:0 10px 0 var(--edge,#ead9e0),0 17px 24px #80628312; } .tile:hover .em { transform:rotate(0) scale(1.08); } }
+  .tile:active { transform:translateY(4px) scale(.98); box-shadow:0 2px 0 var(--edge,#ead9e0); }
+  .home-footer { margin:31px 0 0; text-align:center; color:#ae97a4; font-size:12px; line-height:1.8; }
+  .home-footer span { color:#d18ca2; }
+  .bar { background:#fffdf8ed; border:1px solid white; box-shadow:0 5px 24px #87697d20,0 2px 0 #e9dce6; padding:7px 9px 7px 17px; gap:12px; bottom:max(16px,env(safe-area-inset-bottom)); }
+  .count { font-size:15px; color:#ad7890; padding-right:6px; }
+  .iconbtn { color:#9b82b0; background:#f4edf7; box-shadow:none; width:46px; height:46px; }
+  button:focus-visible { outline:3px solid #ae80bd; outline-offset:5px; }
+  .card,.bush,.opt,.mem-card,.eat-opt,.color-card,.num-card { border-radius:28px; border:3px solid white; box-shadow:0 6px 0 #e9dfea,0 12px 24px #9d7e9e0b; }
+  .card { min-height:170px; background:linear-gradient(160deg,var(--tint),#fffcfa); }
+  .card .name { font-size:15px; margin-top:10px; }
+  .card .face { animation:none; }
+  .animal-grid { gap:20px; }
+  .eat-animal { border-radius:38px; background:#fff6e8; box-shadow:0 6px 0 #eee2d2; padding:22px 50px; }
+  .eat-wrap { gap:30px; }
+  .eat-opt { min-height:165px; background:#fff7e9; }
+  .eat-name { margin-top:10px; }
+  .mem-card { min-height:180px; background:repeating-linear-gradient(45deg,#f3eafa,#f3eafa 12px,#f7effb 12px,#f7effb 24px); }
+  .mem-card .mem-back { opacity:.55; transform:rotate(-12deg); }
+  .color-card { padding:24px 8px 20px; background:#fffdfb; }
+  .color-dot { width:86px; height:86px; }
+  .color-card .cn { font-size:14px; margin-top:8px; }
+  .num-card { background:#edf3fc; min-height:165px; gap:16px; }
+  .num-card:nth-child(3n) { background:#f9e9ee; }
+  .num-card:nth-child(3n + 1) { background:#f6efda; }
+  .num-digit { color:#8571a6; font-size:52px; }
+  .num-dots i { background:#ad96cd; }
+  .listen { box-shadow:0 5px 0 #e8d7ee; background:#f4e8fa; }
+  .bubble-area { background:linear-gradient(160deg,#e5f4f7,#f3ebfa); border:3px solid white; border-radius:36px; box-shadow:0 6px 0 #dfe8ed; }
+  .fw-area { height:min(65vh,600px); background:radial-gradient(ellipse at bottom,#776b9e,#383554); border:3px solid white; box-shadow:0 6px 0 #d9d0e4; }
+  .fw-area .hint { color:#f9efff; background:#ffffff18; }
+  @media (max-width:900px) and (min-width:601px) { .tiles { gap:13px; } .tile { min-height:170px; padding:16px 5px; } .tile .em { width:68px; height:68px; font-size:43px; border-radius:23px; } .tile .lbl { font-size:12px; } .tile .tile-sub { font-size:10px; } .welcome { padding:26px; } }
+  @media (max-width:600px) {
+    header { padding:24px 60px 14px; min-height:105px; } h1 { font-size:25px; } .sub { font-size:12px; line-height:1.5; }
+    body[data-screen="home"] header { padding:21px 16px 17px 68px; min-height:79px; } body[data-screen="home"] header::before { left:18px; top:20px; width:37px; height:37px; font-size:30px; border-radius:13px; } body[data-screen="home"] h1 { font-size:20px; } body[data-screen="home"] .header-note { display:none; } body[data-screen="home"] .sub { font-size:10px; }
+    .roundbtn { left:16px; top:23px; width:42px; height:42px; }
+    .screen { padding:12px 17px 110px; } .screen:not(#scr-home) { padding-top:16px; }
+    .welcome { grid-template-columns:1fr; padding:24px 25px 0; border-radius:30px; min-height:0; text-align:center; }
+    .eyebrow { font-size:9px; padding:6px 10px; }
+    .welcome h2 { font-size:36px; margin:11px 0 9px; letter-spacing:-1.5px; }
+    .welcome h2 br { display:none; } .welcome p { font-size:12px; line-height:1.6; }
+    .welcome-art { height:170px; margin:2px auto -3px; max-width:330px; }
+    .play-heading { margin:28px 2px 16px; } .play-heading h2 { font-size:20px; } .play-heading p { font-size:11px; } .game-count { font-size:10px; padding:6px 9px; }
+    .tiles { grid-template-columns:repeat(2,minmax(0,1fr)); gap:17px 14px; }
+    .tile { min-height:164px; padding:15px 8px 17px; border-radius:25px; }
+    .tile .em { width:73px; height:73px; font-size:46px; border-radius:25px; margin-bottom:6px; }
+    .tile .lbl { font-size:14px; } .tile .tile-sub { font-size:10px; margin-top:5px; }
+    .home-footer { margin-top:27px; font-size:11px; }
+    .animal-grid { gap:14px 10px; } .card { min-height:126px; padding:15px 4px; border-radius:22px; } .card .name { font-size:12px; margin-top:7px; } .card .face { font-size:45px; }
+    .eat-animal { padding:20px 35px; } .eat-opt { min-height:125px; border-radius:22px; } .eat-opt .ef { font-size:40px; } .eat-options { gap:10px; } .eat-wrap { gap:24px; }
+    .mem-card { min-height:140px; border-radius:23px; }
+    .color-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; } .color-card { padding:17px 6px; border-radius:25px; } .color-dot { width:65px; height:65px; } .color-card .cn { font-size:13px; }
+    .num-grid { gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); } .num-card { min-height:135px; gap:12px; } .num-digit { font-size:43px; }
+  }
+  body[data-screen="home"] .bar { position:absolute; top:27px; bottom:auto; right:max(24px,calc((100vw - 1132px)/2)); left:auto; transform:none; background:transparent; box-shadow:none; border:0; padding:0; }
+  body[data-screen="home"] .bar .count,body[data-screen="home"] #fullBtn { display:none; }
+  body[data-screen="home"] .header-note { right:90px; }
+  @media (max-width:600px) { body[data-screen="home"] .bar { top:19px; right:18px; } body[data-screen="home"] .bar .iconbtn { width:40px; height:40px; } }
+  @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
 </style>
 </head>
 <body>
@@ -563,13 +666,89 @@
       <path d="M14.6 5.4 8 12l6.6 6.6"/>
     </svg>
   </button>
-  <h1 id="title">Зверята</h1>
-  <p class="sub" id="subtitle">Выбери игру — и веселись!</p>
+  <h1 id="title">Мир Нурии</h1>
+  <p class="sub" id="subtitle">Расти, играй, удивляйся</p>
+  <span class="header-note">Сделано с любовью для маленьких ручек ♡</span>
 </header>
 
 <main id="screens">
   <section class="screen active" id="scr-home" aria-label="Игры">
+    <div class="welcome">
+      <div class="welcome-copy">
+        <span class="eyebrow">✦ ТВОЯ МАЛЕНЬКАЯ СКАЗКА</span>
+        <h2>Привет,<br> <span>Нурия!</span></h2>
+        <p>Зверята уже ждут тебя.<br>Будем играть, смеяться и узнавать новое!</p>
+      </div>
+      <svg class="welcome-art" viewBox="0 0 500 310" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="bunnyFur" x1="150" y1="110" x2="240" y2="285" gradientUnits="userSpaceOnUse"><stop stop-color="#fffef9"/><stop offset="1" stop-color="#f6e6df"/></linearGradient>
+          <linearGradient id="bearFur" x1="330" y1="140" x2="370" y2="280" gradientUnits="userSpaceOnUse"><stop stop-color="#d8b897"/><stop offset="1" stop-color="#c49a7c"/></linearGradient>
+          <linearGradient id="meadow" x1="250" y1="230" x2="250" y2="310" gradientUnits="userSpaceOnUse"><stop stop-color="#d5e5cd"/><stop offset="1" stop-color="#bdd4b7"/></linearGradient>
+          <filter id="toyShadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#8b7895" flood-opacity=".12"/></filter>
+        </defs>
+        <circle cx="277" cy="143" r="130" fill="#fff" opacity=".25"/>
+        <g opacity=".8" stroke-width="17">
+          <path d="M123 184a127 127 0 0 1 254 0" stroke="#eab6c6"/>
+          <path d="M142 184a108 108 0 0 1 216 0" stroke="#f0cfac"/>
+          <path d="M161 184a89 89 0 0 1 178 0" stroke="#f4e4b4"/>
+          <path d="M180 184a70 70 0 0 1 140 0" stroke="#b9d5c2"/>
+        </g>
+        <g fill="#fffcf7" filter="url(#toyShadow)">
+          <path d="M91 172c-18-2-20-25-4-31 0-25 34-31 45-10 22-8 40 11 30 28 9 12-1 22-16 22H99Z"/>
+          <path d="M350 175c-18-1-20-23-3-28-2-25 30-30 40-11 23-10 41 9 31 27 10 13-1 22-17 22h-43Z"/>
+        </g>
+        <g class="art-float">
+          <circle cx="414" cy="58" r="26" fill="#f5d88e"/>
+          <path d="M414 21v-9m0 92v-9m37-37h9m-92 0h9m10-27-6-6m60 60 6 6m-6-60 6-6" stroke="#ebc67b" stroke-width="4" stroke-linecap="round"/>
+          <path d="M405 56v3m17-3v3" stroke="#9c805f" stroke-width="3" stroke-linecap="round"/>
+          <path d="M408 67q6 5 12 0" stroke="#9c805f" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="399" cy="65" rx="4" ry="2.5" fill="#e9b58e"/><ellipse cx="428" cy="65" rx="4" ry="2.5" fill="#e9b58e"/>
+        </g>
+        <ellipse cx="268" cy="285" rx="205" ry="31" fill="url(#meadow)"/>
+        <g filter="url(#toyShadow)">
+          <!-- Зайка в розовом комбинезоне -->
+          <ellipse cx="176" cy="124" rx="19" ry="62" transform="rotate(-13 176 124)" fill="url(#bunnyFur)"/>
+          <ellipse cx="223" cy="122" rx="18" ry="62" transform="rotate(11 223 122)" fill="url(#bunnyFur)"/>
+          <ellipse cx="176" cy="121" rx="9" ry="43" transform="rotate(-13 176 121)" fill="#efc8cf"/>
+          <ellipse cx="223" cy="119" rx="8" ry="42" transform="rotate(11 223 119)" fill="#efc8cf"/>
+          <ellipse cx="198" cy="245" rx="47" ry="43" fill="#dca2bc"/>
+          <ellipse cx="159" cy="241" rx="14" ry="28" transform="rotate(26 159 241)" fill="url(#bunnyFur)"/>
+          <ellipse cx="240" cy="235" rx="14" ry="28" transform="rotate(-33 240 235)" fill="url(#bunnyFur)"/>
+          <ellipse cx="176" cy="280" rx="24" ry="13" fill="#fff7ef"/><ellipse cx="221" cy="280" rx="24" ry="13" fill="#fff7ef"/>
+          <rect x="175" y="225" width="44" height="32" rx="10" fill="#edbfd2"/><path d="M183 231v-14m28 14v-14" stroke="#edbfd2" stroke-width="9"/>
+          <circle cx="183" cy="231" r="3" fill="#fff9e4"/><circle cx="211" cy="231" r="3" fill="#fff9e4"/>
+          <ellipse cx="197" cy="183" rx="57" ry="49" fill="url(#bunnyFur)"/>
+          <ellipse cx="164" cy="195" rx="11" ry="7" fill="#f0bdc6"/><ellipse cx="230" cy="195" rx="11" ry="7" fill="#f0bdc6"/>
+          <ellipse cx="179" cy="181" rx="4" ry="5.5" fill="#695464"/><ellipse cx="214" cy="181" rx="4" ry="5.5" fill="#695464"/>
+          <circle cx="180" cy="179" r="1.2" fill="white"/><circle cx="215" cy="179" r="1.2" fill="white"/>
+          <path d="M192 193q5-5 10 0l-5 5Z" fill="#c38398"/>
+          <path d="M197 198v3m0 0q-6 6-11 0m11 0q6 6 11 0" stroke="#947083" stroke-width="2" stroke-linecap="round"/>
+          <!-- Мишка с шалфейным шарфиком -->
+          <ellipse cx="332" cy="247" rx="46" ry="42" fill="url(#bearFur)"/>
+          <ellipse cx="332" cy="252" rx="27" ry="26" fill="#e7ccb0"/>
+          <ellipse cx="291" cy="238" rx="14" ry="27" transform="rotate(28 291 238)" fill="#c8a181"/>
+          <ellipse cx="373" cy="238" rx="14" ry="27" transform="rotate(-25 373 238)" fill="#c8a181"/>
+          <ellipse cx="307" cy="280" rx="23" ry="13" fill="#c69d7e"/><ellipse cx="357" cy="280" rx="23" ry="13" fill="#c69d7e"/>
+          <circle cx="296" cy="148" r="23" fill="#d5af8e"/><circle cx="368" cy="148" r="23" fill="#d5af8e"/>
+          <circle cx="296" cy="148" r="12" fill="#e9c8b2"/><circle cx="368" cy="148" r="12" fill="#e9c8b2"/>
+          <ellipse cx="332" cy="184" rx="57" ry="49" fill="url(#bearFur)"/>
+          <ellipse cx="332" cy="202" rx="26" ry="19" fill="#edd5bb"/>
+          <ellipse cx="314" cy="183" rx="4" ry="5" fill="#695047"/><ellipse cx="350" cy="183" rx="4" ry="5" fill="#695047"/>
+          <ellipse cx="299" cy="198" rx="9" ry="6" fill="#d59691"/><ellipse cx="366" cy="198" rx="9" ry="6" fill="#d59691"/>
+          <ellipse cx="332" cy="196" rx="7" ry="5" fill="#886557"/><path d="M332 201v4m0 0q-6 6-10 0m10 0q6 6 10 0" stroke="#886557" stroke-width="2" stroke-linecap="round"/>
+          <path d="M299 222q33 14 65 0l-5 14q-28 12-55 0Z" fill="#99bcb0"/><path d="m350 232 9 30-18-3-5-25" fill="#a8c9bc"/>
+        </g>
+        <g stroke="#a1bb94" stroke-width="3" stroke-linecap="round"><path d="M107 279v-30m312 32v-28"/><path d="m107 267-9-6m321 10 10-7"/></g>
+        <g fill="#f3c2cc"><circle cx="107" cy="241" r="7"/><circle cx="100" cy="248" r="7"/><circle cx="113" cy="250" r="7"/></g>
+        <g fill="#fff6d5"><circle cx="419" cy="247" r="7"/><circle cx="412" cy="254" r="7"/><circle cx="425" cy="256" r="7"/></g>
+        <circle cx="107" cy="248" r="4" fill="#eac16d"/><circle cx="419" cy="254" r="4" fill="#eac16d"/>
+        <g fill="#c1a6d2"><path d="m83 78 4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/><path d="m453 200 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z"/></g>
+        <path d="M120 36c-8-12-23 0-5 14l5 4 5-4c18-14 3-26-5-14" fill="#dfadbf"/>
+      </svg>
+    </div>
+    <div class="play-heading"><div><h2>Во что поиграем?</h2><p>Выбирай картинку — и начнём!</p></div><span class="game-count">10 добрых игр</span></div>
     <div class="tiles" id="tiles"></div>
+    <p class="home-footer">Маленькие шаги. Большие открытия.<br>С любовью для Нурии <span>♡</span></p>
   </section>
 
   <section class="screen" id="scr-animals" aria-label="Зверята">
@@ -921,16 +1100,8 @@
       if (!ruVoice) ruVoice = pickRuVoice();
       if (ruVoice) u.voice = ruVoice;
 
-      var speaking = speechSynthesis.speaking || speechSynthesis.pending;
-      if (speaking) {
-        speechSynthesis.cancel();
-        setTimeout(function () {
-          if (muted) return;
-          try { speechSynthesis.speak(u); } catch (e) {}
-        }, 90);
-      } else {
-        speechSynthesis.speak(u);
-      }
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
     } catch (e) {}
   }
 
@@ -951,12 +1122,12 @@
     { animal:'🐻', who:'Мишка',     food:'🍯', what:'мёд' },
     { animal:'🐼', who:'Панда',     food:'🎋', what:'бамбук' },
     { animal:'🐱', who:'Котик',     food:'🐟', what:'рыбка' },
-    { animal:'🐶', who:'Пёсик',     food:'🦴', what:'косточка' },
+    { animal:'🐶', who:'Пёсик',     food:'🥩', what:'мясо' },
     { animal:'🐷', who:'Свинка',    food:'🌽', what:'кукуруза' },
     { animal:'🐮', who:'Коровка',   food:'🌿', what:'травка' },
     { animal:'🐑', who:'Овечка',    food:'🌾', what:'сено' },
-    { animal:'🦆', who:'Утёнок',    food:'🍞', what:'хлебушек' },
-    { animal:'🐧', who:'Пингвин',   food:'🐠', what:'рыбка' },
+    { animal:'🦆', who:'Утёнок',    food:'🌽', what:'кукуруза' },
+    { animal:'🐧', who:'Пингвин',   food:'🐟', what:'рыбка' },
     { animal:'🐸', who:'Лягушка',   food:'🪰', what:'мушка' },
     { animal:'🐭', who:'Мышка',     food:'🧀', what:'сыр' },
     { animal:'🐿️', who:'Белочка',   food:'🌰', what:'орешек' },
@@ -1055,7 +1226,7 @@
   ];
 
   var META = {
-    home:      { title:'Нурия',    sub:'Привет! Выбери, во что поиграем' },
+    home:      { title:'Нурия',    sub:'Расти, играй, удивляйся' },
     animals:   { title:'Зверята',  sub:'Нажми на зверюшку — она скажет «привет»!' },
     hide:      { title:'Прятки',   sub:'Кто спрятался под листиком? Нажми!' },
     guess:     { title:'Угадай!',  sub:'Послушай голос и найди зверюшку' },
@@ -1103,13 +1274,16 @@
     if (oldEl) oldEl.classList.remove('active');
 
     current = id;
+    document.body.dataset.screen = id;
+    hush();
+    clearNumberSounds();
     var meta = META[id] || META.home;
 
     var el = scr(id);
     el.classList.add('active');
 
     if (id === 'home') {
-      titleEl.innerHTML = '<span class="name-glow">Нурия</span>';
+      titleEl.innerHTML = '<span class="name-glow">Мир Нурии</span>';
     } else {
       titleEl.textContent = meta.title;
     }
@@ -1131,13 +1305,28 @@
     if (box.dataset.built) return;
     box.dataset.built = '1';
 
+    var tileLooks = {
+      animals: ['#fbe5ed','#edcfdb','Привет, пушистик!'],
+      hide: ['#eaf0de','#d9e3cc','Ку-ку! Кто там?'],
+      eat: ['#fbeedc','#efdfc4','Угощение для друзей'],
+      memory: ['#eee5f7','#ded0e9','Два похожих друга'],
+      guess: ['#f9e6df','#ebd4ca','Чей это голосок?'],
+      piano: ['#e3eef9','#cddfed','Твоя первая мелодия'],
+      bubbles: ['#e3f2ee','#cce5dc','Лоп-лоп, пузырёк!'],
+      fireworks: ['#eee8f8','#dcd1ed','Зажигаем звёздочки'],
+      colors: ['#f9e3eb','#edcedd','Собери свою радугу'],
+      numbers: ['#fbf0d9','#ecdfbc','Считаем до десяти']
+    };
     TILES.forEach(function (t) {
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'tile';
-      b.style.setProperty('--tint', t.tint);
+      b.dataset.game = t.id;
+      b.style.setProperty('--tint', tileLooks[t.id][0]);
+      b.style.setProperty('--edge', tileLooks[t.id][1]);
       b.innerHTML = '<span class="em" aria-hidden="true">' + t.em + '</span>' +
-                    '<span class="lbl">' + t.label + '</span>';
+                    '<span class="lbl">' + t.label + '</span>' +
+                    '<span class="tile-sub" aria-hidden="true">' + tileLooks[t.id][2] + '</span>';
       b.setAttribute('aria-label', t.label);
       b.addEventListener('click', function () {
         audio();
@@ -1436,11 +1625,12 @@
   function enterBubbles() {
     leaveBubbles();
     BUB.area = document.getElementById('bubbleArea');
-    setTimeout(function () { for (var i = 0; i < 3; i++) spawnBubble(); }, 120);
+    BUB.startTimer = setTimeout(function () { for (var i = 0; i < 3; i++) spawnBubble(); }, 120);
     BUB.timer = setInterval(spawnBubble, 560);
   }
 
   function leaveBubbles() {
+    clearTimeout(BUB.startTimer);
     clearInterval(BUB.timer);
     BUB.timer = null;
     if (BUB.area) BUB.area.innerHTML = '';
@@ -1448,7 +1638,7 @@
 
   function spawnBubble() {
     var area = BUB.area;
-    if (!area || !area.isConnected) return;
+    if (current !== 'bubbles' || !area || !area.isConnected) return;
     if (area.children.length >= BUB.max) return;
 
     var a = pick(ANIMALS);
@@ -1619,7 +1809,12 @@
     if (face) face.textContent = t.animal;
     if (name) name.textContent = t.who + ' хочет кушать';
 
-    var others = FOODS.filter(function (f) { return f.food !== t.food; });
+    var seenFoods = {};
+    var others = FOODS.filter(function (f) {
+      if (f.food === t.food || f.what === t.what || seenFoods[f.food]) return false;
+      seenFoods[f.food] = true;
+      return true;
+    });
     shuffle(others);
     var three = shuffle([t, others[0], others[1]]);
 
@@ -1652,7 +1847,8 @@
       btn.classList.add('good');
 
       play('chomp');
-      setTimeout(function () { play(EAT.target.voice); }, 280);
+      var friend = ANIMALS.filter(function (a) { return a.emoji === EAT.target.animal; })[0];
+      setTimeout(function () { if (current === 'eat') play(friend ? friend.voice : 'sparkle'); }, 280);
 
       var animal = document.getElementById('eatAnimal');
       if (animal) {
@@ -1674,7 +1870,7 @@
       setTimeout(function () { btn.classList.remove('bad'); }, 500);
       play('soft');
       clearTimeout(EAT.speak);
-      EAT.speak = setTimeout(function () { say('Это не ' + f.what); }, 400);
+      EAT.speak = setTimeout(function () { say('Попробуй другое угощение'); }, 400);
     }
   }
 
@@ -1818,7 +2014,14 @@
     }
   }
 
+  var numberTimers = [];
+  function clearNumberSounds() {
+    numberTimers.forEach(clearTimeout);
+    numberTimers = [];
+  }
+
   function numTap(b, n) {
+    clearNumberSounds();
     audio();
     b.classList.remove('hit');
     void b.offsetWidth;
@@ -1826,10 +2029,10 @@
 
     for (var i = 0; i < n; i++) {
       (function (i) {
-        setTimeout(function () { beep(520 + i * 55); }, i * 115);
+        numberTimers.push(setTimeout(function () { if (current === 'numbers') beep(520 + i * 55); }, 550 + i * 115));
       })(i);
     }
-    setTimeout(function () { say(NUM_WORDS[n - 1]); }, 150 + n * 115);
+    say(NUM_WORDS[n - 1]);
     bump();
   }
 
@@ -1841,7 +2044,8 @@
 
   muteBtn.addEventListener('click', function () {
     muted = !muted;
-    if (muted) hush();
+    if (muted) { hush(); clearNumberSounds(); }
+    if (bus && ctx) bus.gain.setValueAtTime(muted ? 0 : 0.85, ctx.currentTime);
     muteBtn.classList.toggle('off', muted);
     muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
     muteBtn.setAttribute('aria-label', muted ? 'Включить звук' : 'Выключить звук');
