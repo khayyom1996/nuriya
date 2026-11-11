@@ -644,27 +644,52 @@
   body[data-screen="home"] .header-note { right:90px; }
   @media (max-width:600px) { body[data-screen="home"] .bar { top:19px; right:18px; } body[data-screen="home"] .bar .iconbtn { width:40px; height:40px; } }
   @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+
+  /* Generated image assets: consistent in menus, cards, matches and bubbles. */
+  .art-img { display:block; width:100%; height:100%; object-fit:contain; pointer-events:none; user-select:none; }
+  .welcome-art { object-fit:contain; height:300px; }
+  body[data-screen="home"] header::before { content:''; background:transparent url('assets/images/games-flower.webp') center/contain no-repeat; transform:rotate(-9deg); }
+  .tile .em { width:100px; height:100px; background:transparent; box-shadow:none; transform:rotate(-3deg); margin-bottom:1px; }
+  .tile:nth-child(even) .em { transform:rotate(3deg); }
+  .tile::before { content:''; width:20px; height:20px; background:url('assets/images/games-fireworks.webp') center/contain no-repeat; opacity:.65; }
+  .control-art { object-fit:contain; pointer-events:none; width:31px; height:31px; }
+  .heart-art { object-fit:contain; width:27px; height:27px; }
+  .card .face { width:110px; height:110px; filter:none; }
+  .card .name { margin-top:3px; }
+  .bush .who,.bush .cover { width:110px; height:110px; display:block; filter:none; }
+  .opt .oe { display:block; width:125px; height:125px; margin:0 auto; filter:none; }
+  .bubble { padding:8px; }
+  .eat-face { display:block; width:135px; height:135px; filter:none; }
+  .eat-opt .ef { display:block; width:105px; height:105px; filter:none; }
+  .mem-card .mem-back,.mem-card .mem-face { display:block; width:120px; height:120px; }
+  .mem-card .mem-back { width:75px; height:75px; opacity:.8; }
+  .home-footer a { color:#8e7894; text-underline-offset:3px; font-size:11px; }
+  .sound-status { position:fixed; bottom:95px; left:50%; transform:translateX(-50%); z-index:50; max-width:90vw; padding:10px 16px; border-radius:16px; background:#fff8ec; color:#7c6485; box-shadow:0 3px 15px #77608020; font-size:13px; text-align:center; }
+  .sound-status:empty { display:none; }
+  @media(max-width:900px) and (min-width:601px) { .tile .em { width:80px; height:80px; } }
+  @media(max-width:600px) {
+    .welcome-art { height:195px; max-width:340px; margin-top:5px; }
+    .tile .em { width:90px; height:90px; }
+    .card .face { width:76px; height:76px; } .card .name { margin-top:3px; }
+    .bush .who,.bush .cover { width:85px; height:85px; }
+    .opt .oe { width:80px; height:80px; }
+    .eat-face { width:115px; height:115px; }
+    .eat-opt .ef { width:78px; height:78px; }
+    .mem-card .mem-face { width:90px; height:90px; }
+    .mem-card .mem-back { width:60px; height:60px; }
+  }
+  .key .ke { display:block; width:65px; height:65px; max-width:100%; filter:none; }
+  .bush .cover { inset:0; width:auto; height:auto; display:grid; place-items:center; background:linear-gradient(155deg,#edf4df,#ddebcf); }
+  .bush .cover .art-img { width:110px; height:110px; }
+  @media(max-width:600px) { .key .ke { width:58px; height:58px; } .bush .cover .art-img { width:85px; height:85px; } }
 </style>
 </head>
 <body>
 
-<div class="scene" aria-hidden="true">
-  <div class="sun">☀️</div>
-  <div class="cloud c1">☁️</div>
-  <div class="cloud c2">☁️</div>
-  <div class="cloud c3">☁️</div>
-  <div class="hill"></div>
-  <div class="tulip t1">🌷</div>
-  <div class="tulip t2">🌼</div>
-  <div class="tulip t3">🌻</div>
-  <div class="tulip t4">🌷</div>
-</div>
+<div class="scene" aria-hidden="true"><div class="hill"></div></div>
 
 <header>
-  <button class="roundbtn" id="backBtn" type="button" aria-label="Назад" title="Назад" hidden>
-    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M14.6 5.4 8 12l6.6 6.6"/>
-    </svg>
+  <button class="roundbtn" id="backBtn" type="button" aria-label="Назад" title="Назад" hidden><img class="control-art" src="assets/images/ui-back.webp" alt="" width="30" height="30">
   </button>
   <h1 id="title">Мир Нурии</h1>
   <p class="sub" id="subtitle">Расти, играй, удивляйся</p>
@@ -679,76 +704,11 @@
         <h2>Привет,<br> <span>Нурия!</span></h2>
         <p>Зверята уже ждут тебя.<br>Будем играть, смеяться и узнавать новое!</p>
       </div>
-      <svg class="welcome-art" viewBox="0 0 500 310" fill="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="bunnyFur" x1="150" y1="110" x2="240" y2="285" gradientUnits="userSpaceOnUse"><stop stop-color="#fffef9"/><stop offset="1" stop-color="#f6e6df"/></linearGradient>
-          <linearGradient id="bearFur" x1="330" y1="140" x2="370" y2="280" gradientUnits="userSpaceOnUse"><stop stop-color="#d8b897"/><stop offset="1" stop-color="#c49a7c"/></linearGradient>
-          <linearGradient id="meadow" x1="250" y1="230" x2="250" y2="310" gradientUnits="userSpaceOnUse"><stop stop-color="#d5e5cd"/><stop offset="1" stop-color="#bdd4b7"/></linearGradient>
-          <filter id="toyShadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#8b7895" flood-opacity=".12"/></filter>
-        </defs>
-        <circle cx="277" cy="143" r="130" fill="#fff" opacity=".25"/>
-        <g opacity=".8" stroke-width="17">
-          <path d="M123 184a127 127 0 0 1 254 0" stroke="#eab6c6"/>
-          <path d="M142 184a108 108 0 0 1 216 0" stroke="#f0cfac"/>
-          <path d="M161 184a89 89 0 0 1 178 0" stroke="#f4e4b4"/>
-          <path d="M180 184a70 70 0 0 1 140 0" stroke="#b9d5c2"/>
-        </g>
-        <g fill="#fffcf7" filter="url(#toyShadow)">
-          <path d="M91 172c-18-2-20-25-4-31 0-25 34-31 45-10 22-8 40 11 30 28 9 12-1 22-16 22H99Z"/>
-          <path d="M350 175c-18-1-20-23-3-28-2-25 30-30 40-11 23-10 41 9 31 27 10 13-1 22-17 22h-43Z"/>
-        </g>
-        <g class="art-float">
-          <circle cx="414" cy="58" r="26" fill="#f5d88e"/>
-          <path d="M414 21v-9m0 92v-9m37-37h9m-92 0h9m10-27-6-6m60 60 6 6m-6-60 6-6" stroke="#ebc67b" stroke-width="4" stroke-linecap="round"/>
-          <path d="M405 56v3m17-3v3" stroke="#9c805f" stroke-width="3" stroke-linecap="round"/>
-          <path d="M408 67q6 5 12 0" stroke="#9c805f" stroke-width="2" stroke-linecap="round"/>
-          <ellipse cx="399" cy="65" rx="4" ry="2.5" fill="#e9b58e"/><ellipse cx="428" cy="65" rx="4" ry="2.5" fill="#e9b58e"/>
-        </g>
-        <ellipse cx="268" cy="285" rx="205" ry="31" fill="url(#meadow)"/>
-        <g filter="url(#toyShadow)">
-          <!-- Зайка в розовом комбинезоне -->
-          <ellipse cx="176" cy="124" rx="19" ry="62" transform="rotate(-13 176 124)" fill="url(#bunnyFur)"/>
-          <ellipse cx="223" cy="122" rx="18" ry="62" transform="rotate(11 223 122)" fill="url(#bunnyFur)"/>
-          <ellipse cx="176" cy="121" rx="9" ry="43" transform="rotate(-13 176 121)" fill="#efc8cf"/>
-          <ellipse cx="223" cy="119" rx="8" ry="42" transform="rotate(11 223 119)" fill="#efc8cf"/>
-          <ellipse cx="198" cy="245" rx="47" ry="43" fill="#dca2bc"/>
-          <ellipse cx="159" cy="241" rx="14" ry="28" transform="rotate(26 159 241)" fill="url(#bunnyFur)"/>
-          <ellipse cx="240" cy="235" rx="14" ry="28" transform="rotate(-33 240 235)" fill="url(#bunnyFur)"/>
-          <ellipse cx="176" cy="280" rx="24" ry="13" fill="#fff7ef"/><ellipse cx="221" cy="280" rx="24" ry="13" fill="#fff7ef"/>
-          <rect x="175" y="225" width="44" height="32" rx="10" fill="#edbfd2"/><path d="M183 231v-14m28 14v-14" stroke="#edbfd2" stroke-width="9"/>
-          <circle cx="183" cy="231" r="3" fill="#fff9e4"/><circle cx="211" cy="231" r="3" fill="#fff9e4"/>
-          <ellipse cx="197" cy="183" rx="57" ry="49" fill="url(#bunnyFur)"/>
-          <ellipse cx="164" cy="195" rx="11" ry="7" fill="#f0bdc6"/><ellipse cx="230" cy="195" rx="11" ry="7" fill="#f0bdc6"/>
-          <ellipse cx="179" cy="181" rx="4" ry="5.5" fill="#695464"/><ellipse cx="214" cy="181" rx="4" ry="5.5" fill="#695464"/>
-          <circle cx="180" cy="179" r="1.2" fill="white"/><circle cx="215" cy="179" r="1.2" fill="white"/>
-          <path d="M192 193q5-5 10 0l-5 5Z" fill="#c38398"/>
-          <path d="M197 198v3m0 0q-6 6-11 0m11 0q6 6 11 0" stroke="#947083" stroke-width="2" stroke-linecap="round"/>
-          <!-- Мишка с шалфейным шарфиком -->
-          <ellipse cx="332" cy="247" rx="46" ry="42" fill="url(#bearFur)"/>
-          <ellipse cx="332" cy="252" rx="27" ry="26" fill="#e7ccb0"/>
-          <ellipse cx="291" cy="238" rx="14" ry="27" transform="rotate(28 291 238)" fill="#c8a181"/>
-          <ellipse cx="373" cy="238" rx="14" ry="27" transform="rotate(-25 373 238)" fill="#c8a181"/>
-          <ellipse cx="307" cy="280" rx="23" ry="13" fill="#c69d7e"/><ellipse cx="357" cy="280" rx="23" ry="13" fill="#c69d7e"/>
-          <circle cx="296" cy="148" r="23" fill="#d5af8e"/><circle cx="368" cy="148" r="23" fill="#d5af8e"/>
-          <circle cx="296" cy="148" r="12" fill="#e9c8b2"/><circle cx="368" cy="148" r="12" fill="#e9c8b2"/>
-          <ellipse cx="332" cy="184" rx="57" ry="49" fill="url(#bearFur)"/>
-          <ellipse cx="332" cy="202" rx="26" ry="19" fill="#edd5bb"/>
-          <ellipse cx="314" cy="183" rx="4" ry="5" fill="#695047"/><ellipse cx="350" cy="183" rx="4" ry="5" fill="#695047"/>
-          <ellipse cx="299" cy="198" rx="9" ry="6" fill="#d59691"/><ellipse cx="366" cy="198" rx="9" ry="6" fill="#d59691"/>
-          <ellipse cx="332" cy="196" rx="7" ry="5" fill="#886557"/><path d="M332 201v4m0 0q-6 6-10 0m10 0q6 6 10 0" stroke="#886557" stroke-width="2" stroke-linecap="round"/>
-          <path d="M299 222q33 14 65 0l-5 14q-28 12-55 0Z" fill="#99bcb0"/><path d="m350 232 9 30-18-3-5-25" fill="#a8c9bc"/>
-        </g>
-        <g stroke="#a1bb94" stroke-width="3" stroke-linecap="round"><path d="M107 279v-30m312 32v-28"/><path d="m107 267-9-6m321 10 10-7"/></g>
-        <g fill="#f3c2cc"><circle cx="107" cy="241" r="7"/><circle cx="100" cy="248" r="7"/><circle cx="113" cy="250" r="7"/></g>
-        <g fill="#fff6d5"><circle cx="419" cy="247" r="7"/><circle cx="412" cy="254" r="7"/><circle cx="425" cy="256" r="7"/></g>
-        <circle cx="107" cy="248" r="4" fill="#eac16d"/><circle cx="419" cy="254" r="4" fill="#eac16d"/>
-        <g fill="#c1a6d2"><path d="m83 78 4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/><path d="m453 200 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z"/></g>
-        <path d="M120 36c-8-12-23 0-5 14l5 4 5-4c18-14 3-26-5-14" fill="#dfadbf"/>
-      </svg>
+      <img class="welcome-art" src="assets/images/welcome.webp" width="1000" height="667" alt="Зайка и мишка под мягкой радугой" fetchpriority="high">
     </div>
     <div class="play-heading"><div><h2>Во что поиграем?</h2><p>Выбирай картинку — и начнём!</p></div><span class="game-count">10 добрых игр</span></div>
     <div class="tiles" id="tiles"></div>
-    <p class="home-footer">Маленькие шаги. Большие открытия.<br>С любовью для Нурии <span>♡</span></p>
+    <p class="home-footer">Маленькие шаги. Большие открытия.<br>С любовью для Нурии <span>♡</span><br><a href="credits.html">Источники звуков · для родителей</a></p>
   </section>
 
   <section class="screen" id="scr-animals" aria-label="Зверята">
@@ -757,12 +717,7 @@
 
   <section class="screen" id="scr-guess" aria-label="Угадай по голосу">
     <div class="guess-wrap">
-      <button class="listen" id="listenBtn" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 9.4h3.3L12.2 5.5v13L7.3 14.6H4z"/>
-          <path d="M15.6 9.1a4.4 4.4 0 0 1 0 5.8"/>
-          <path d="M18.2 6.6a8 8 0 0 1 0 10.8"/>
-        </svg>
+      <button class="listen" id="listenBtn" type="button"><img class="control-art" src="assets/images/ui-sound.webp" alt="" width="30" height="30">
         Послушать ещё раз
       </button>
       <div class="options" id="guessOptions"></div>
@@ -791,8 +746,8 @@
     <div class="eat-wrap">
       <div class="eat-animal" id="eatAnimal">
         <span class="eat-bubble" aria-hidden="true">Ням!</span>
-        <span class="eat-face" id="eatFace">🐰</span>
-        <span class="eat-name" id="eatName">Зайка хочет кушать</span>
+        <span class="eat-face" id="eatFace"><img class="art-img" src="assets/images/animals-rabbit.webp" alt=""></span>
+        <span class="eat-name" id="eatName">Кролик хочет кушать</span>
       </div>
       <div class="eat-options" id="eatOptions"></div>
     </div>
@@ -812,35 +767,22 @@
 </main>
 
 <div class="bar">
-  <div class="count" aria-live="polite">❤️ <span class="num" id="count">0</span></div>
+  <div class="count" aria-live="polite"><img class="heart-art" src="assets/images/games-heart.webp" alt="Сердечки" width="26" height="26"> <span class="num" id="count">0</span></div>
   <button class="iconbtn" id="muteBtn" type="button" aria-pressed="false" aria-label="Выключить звук" title="Звук">
-    <svg class="ic-on" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 9.4h3.3L12.2 5.5v13L7.3 14.6H4z"/>
-      <path d="M15.6 9.1a4.4 4.4 0 0 1 0 5.8"/>
-      <path d="M18.2 6.6a8 8 0 0 1 0 10.8"/>
-    </svg>
-    <svg class="ic-off" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 9.4h3.3L12.2 5.5v13L7.3 14.6H4z"/>
-      <path d="M16 9.5l4 5"/>
-      <path d="M20 9.5l-4 5"/>
-    </svg>
+    <img class="ic-on control-art" src="assets/images/ui-sound.webp" alt="" width="30" height="30">
+    <img class="ic-off control-art" src="assets/images/ui-muted.webp" alt="" width="30" height="30">
   </button>
-  <button class="iconbtn" id="fullBtn" type="button" aria-label="Во весь экран" title="Во весь экран">
-    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 9.2V5.8A1.8 1.8 0 0 1 5.8 4H9.2"/>
-      <path d="M14.8 4h3.4A1.8 1.8 0 0 1 20 5.8v3.4"/>
-      <path d="M20 14.8v3.4a1.8 1.8 0 0 1-1.8 1.8h-3.4"/>
-      <path d="M9.2 20H5.8A1.8 1.8 0 0 1 4 18.2v-3.4"/>
-    </svg>
+  <button class="iconbtn" id="fullBtn" type="button" aria-label="Во весь экран" title="Во весь экран"><img class="control-art" src="assets/images/ui-fullscreen.webp" alt="" width="30" height="30">
   </button>
 </div>
 
+<div class="sound-status" id="soundStatus" role="status" aria-live="polite"></div>
 <script>
 (function () {
   'use strict';
 
   /* ============================================================
-     ЗВУК — синтез в браузере, никаких файлов
+     ЗВУК — записи животных и музыкальные эффекты
      ============================================================ */
   var ctx = null, bus = null, noiseBuf = null;
   var muted = false;
@@ -861,7 +803,7 @@
       bus.connect(comp);
       comp.connect(ctx.destination);
     }
-    if (ctx.state === 'suspended') ctx.resume();
+    if (ctx.state === 'suspended') ctx.resume().catch(function () {});
     return ctx;
   }
 
@@ -966,61 +908,7 @@
   }
 
   var VOICES = {
-    cat: function (p) {
-      tone({ f:720*p,  to:1010*p, d:0.14, type:'sawtooth', vol:0.10, attack:0.025, filter:'lowpass', ff:2400 });
-      tone({ f:990*p,  to:430*p,  d:0.42, type:'sawtooth', vol:0.13, delay:0.12, attack:0.03, filter:'lowpass', ff:1800, vib:6, vibDepth:16 });
-    },
-    dog: function (p) {
-      tone({ f:430*p, to:175*p, d:0.13, type:'square', vol:0.13, filter:'bandpass', ff:820, q:1.6 });
-      tone({ f:400*p, to:170*p, d:0.13, type:'square', vol:0.11, delay:0.17, filter:'bandpass', ff:820, q:1.6 });
-    },
-    rabbit: function (p) {
-      tone({ f:1150*p, to:1500*p, d:0.09, type:'sine', vol:0.13 });
-      tone({ f:1320*p, to:1750*p, d:0.11, type:'sine', vol:0.11, delay:0.11 });
-    },
-    bear: function (p) {
-      tone({ f:185*p, to:118*p, d:0.5,  type:'sine',     vol:0.22, filter:'lowpass', ff:700, vib:5, vibDepth:6, attack:0.03 });
-      tone({ f:150*p, to:100*p, d:0.45, type:'triangle', vol:0.07, delay:0.04, filter:'lowpass', ff:520 });
-    },
-    panda: function (p) {
-      tone({ f:900*p,  to:1320*p, d:0.12, type:'sine', vol:0.14 });
-      tone({ f:1120*p, to:800*p,  d:0.16, type:'sine', vol:0.12, delay:0.12 });
-      hiss({ d:0.07, vol:0.05, ff:1800, filter:'bandpass', q:1.2, delay:0.3 });
-    },
-    fox: function (p) {
-      tone({ f:780*p, to:520*p, d:0.10, type:'square', vol:0.10, filter:'bandpass', ff:1100, q:2.2 });
-      tone({ f:840*p, to:545*p, d:0.10, type:'square', vol:0.09, delay:0.13, filter:'bandpass', ff:1100, q:2.2 });
-    },
-    frog: function (p) {
-      tone({ f:230*p, to:168*p, d:0.18, type:'sawtooth', vol:0.16, filter:'bandpass', ff:700, q:5, am:26, amDepth:0.55 });
-      tone({ f:210*p, to:152*p, d:0.20, type:'sawtooth', vol:0.12, delay:0.16, filter:'bandpass', ff:650, q:5, am:24, amDepth:0.55 });
-    },
-    pig: function (p) {
-      hiss({ d:0.16, vol:0.16, ff:430, to:210, q:1.3, filter:'lowpass' });
-      tone({ f:150*p, to:110*p, d:0.16, type:'sawtooth', vol:0.07, filter:'lowpass', ff:600 });
-      hiss({ d:0.14, vol:0.13, ff:380, to:190, delay:0.2, q:1.3, filter:'lowpass' });
-    },
-    cow: function (p) {
-      tone({ f:150*p, to:112*p, d:0.75, type:'sine',     vol:0.22, filter:'lowpass', ff:900, vib:5.5, vibDepth:5, attack:0.06 });
-      tone({ f:300*p, to:225*p, d:0.70, type:'triangle', vol:0.05, delay:0.03, filter:'lowpass', ff:1200, attack:0.08 });
-    },
-    sheep: function (p) {
-      tone({ f:395*p, to:300*p, d:0.5, type:'triangle', vol:0.16, filter:'lowpass', ff:2300, vib:16, vibDepth:28, attack:0.03, am:17, amDepth:0.4 });
-    },
-    duck: function (p) {
-      tone({ f:640*p, to:390*p, d:0.20, type:'sawtooth', vol:0.12, filter:'bandpass', ff:1300, q:3 });
-      tone({ f:600*p, to:360*p, d:0.18, type:'sawtooth', vol:0.10, delay:0.22, filter:'bandpass', ff:1200, q:3 });
-    },
-    penguin: function (p) {
-      tone({ f:880*p,  to:1500*p, d:0.12, type:'sine', vol:0.13 });
-      tone({ f:1000*p, to:1720*p, d:0.10, type:'sine', vol:0.11, delay:0.12 });
-    },
-    chick: function (p) {
-      tone({ f:1400*p, to:1900*p, d:0.07, type:'triangle', vol:0.11 });
-      tone({ f:1600*p, to:2100*p, d:0.07, type:'triangle', vol:0.09, delay:0.09 });
-    },
-
-    /* --- служебные звуки --- */
+    /* Musical UI effects only. Animal voices are licensed recordings. */
     sparkle: function () {
       var notes = [1046.5, 1318.5, 1568, 2093];
       for (var i = 0; i < notes.length; i++) {
@@ -1063,7 +951,77 @@
     }
   };
 
+  /* Real recordings, not oscillator imitations. IDs also select illustrations. */
+  var ANIMAL_AUDIO = {};
+  ['cat','dog','rabbit','bear','panda','fox','frog','pig','cow','sheep','duck','penguin'].forEach(function (id) {
+    ANIMAL_AUDIO[id] = 'assets/audio/' + id + '.mp3';
+  });
+  var soundBuffers = {}, activeAnimal = null, soundRequest = 0, filePlayer = null;
+  var screenEpoch = 0, soundNoticeTimer = null;
+  function onScreen(fn, delay) {
+    var epoch = screenEpoch;
+    return setTimeout(function () { if (epoch === screenEpoch) fn(); }, delay);
+  }
+  function stopAnimalSound() {
+    soundRequest++;
+    if (activeAnimal) { try { activeAnimal.stop(); } catch (e) {} activeAnimal = null; }
+    if (filePlayer) { filePlayer.pause(); filePlayer.currentTime = 0; }
+  }
+  function soundNotice(text) {
+    var el = document.getElementById('soundStatus');
+    clearTimeout(soundNoticeTimer);
+    el.textContent = text;
+    if (text) soundNoticeTimer = setTimeout(function () { el.textContent = ''; }, 4000);
+  }
+  function loadAnimalSound(id) {
+    if (soundBuffers[id]) return soundBuffers[id];
+    var c = audio();
+    if (!c) return Promise.reject(new Error('AudioContext unavailable'));
+    soundBuffers[id] = fetch(ANIMAL_AUDIO[id]).then(function (response) {
+      if (!response.ok) throw new Error('Audio HTTP ' + response.status);
+      return response.arrayBuffer();
+    }).then(function (bytes) { return c.decodeAudioData(bytes); }).catch(function (error) {
+      delete soundBuffers[id];
+      throw error;
+    });
+    return soundBuffers[id];
+  }
+  function preloadAnimalSounds() {
+    if (location.protocol === 'file:') return;
+    Object.keys(ANIMAL_AUDIO).forEach(function (id) { loadAnimalSound(id).catch(function () {}); });
+  }
+  function playAnimalSound(id) {
+    stopAnimalSound();
+    if (muted) return;
+    hush();
+    var request = soundRequest;
+    soundNotice('');
+    // Local folder copies can play MP3 without file:// fetch permissions.
+    if (location.protocol === 'file:') {
+      if (!filePlayer) filePlayer = new Audio();
+      filePlayer.src = ANIMAL_AUDIO[id];
+      filePlayer.volume = 0.85;
+      filePlayer.playbackRate = 1;
+      var playing = filePlayer.play();
+      if (playing) playing.catch(function () { if (request === soundRequest) soundNotice('Нажми на зверюшку ещё раз, чтобы включить звук'); });
+      return;
+    }
+    var c = audio();
+    loadAnimalSound(id).then(function (buffer) {
+      if (muted || request !== soundRequest || !c) return;
+      var source = c.createBufferSource();
+      source.buffer = buffer;
+      source.playbackRate.value = 1;
+      source.connect(bus);
+      activeAnimal = source;
+      source.onended = function () { if (activeAnimal === source) activeAnimal = null; };
+      source.start();
+    }).catch(function () {
+      if (request === soundRequest && !muted) soundNotice('Звук пока не загрузился. Нажми ещё раз');
+    });
+  }
   function play(voice, p) {
+    if (ANIMAL_AUDIO[voice]) { playAnimalSound(voice); return; }
     var fn = VOICES[voice];
     if (!fn) return;
     try { fn(p || 1); } catch (e) {}
@@ -1118,7 +1076,7 @@
 
   /* ---------- данные для новых игр ---------- */
   var FOODS = [
-    { animal:'🐰', who:'Зайка',     food:'🥕', what:'морковка' },
+    { animal:'🐰', who:'Кролик',     food:'🥕', what:'морковка' },
     { animal:'🐻', who:'Мишка',     food:'🍯', what:'мёд' },
     { animal:'🐼', who:'Панда',     food:'🎋', what:'бамбук' },
     { animal:'🐱', who:'Котик',     food:'🐟', what:'рыбка' },
@@ -1126,7 +1084,7 @@
     { animal:'🐷', who:'Свинка',    food:'🌽', what:'кукуруза' },
     { animal:'🐮', who:'Коровка',   food:'🌿', what:'травка' },
     { animal:'🐑', who:'Овечка',    food:'🌾', what:'сено' },
-    { animal:'🦆', who:'Утёнок',    food:'🌽', what:'кукуруза' },
+    { animal:'🦆', who:'Уточка',    food:'🌽', what:'кукуруза' },
     { animal:'🐧', who:'Пингвин',   food:'🐟', what:'рыбка' },
     { animal:'🐸', who:'Лягушка',   food:'🪰', what:'мушка' },
     { animal:'🐭', who:'Мышка',     food:'🧀', what:'сыр' },
@@ -1152,7 +1110,7 @@
   /* ============================================================
      УТИЛИТЫ
      ============================================================ */
-  var BITS = ['💗','💖','✨','⭐','💫','🌸','🎉','💛','🌈','🫧'];
+  var BITS = ['games-heart','games-flower','games-fireworks','games-bubbles'];
   var countEl = document.getElementById('count');
   var taps = 0;
 
@@ -1176,7 +1134,8 @@
       (function () {
         var b = document.createElement('div');
         b.className = 'bit';
-        b.textContent = BITS[Math.floor(Math.random() * BITS.length)];
+        b.innerHTML = art(BITS[Math.floor(Math.random() * BITS.length)]);
+        b.style.width = b.style.height = (big ? 42 : 28) + 'px';
         b.style.fontSize = ((big ? 26 : 18) + Math.random() * (big ? 22 : 14)) + 'px';
         b.style.left = (x + (Math.random() * 2 - 1) * (big ? 90 : 46)) + 'px';
         b.style.top  = (y + (Math.random() * 2 - 1) * 20) + 'px';
@@ -1200,15 +1159,15 @@
   var ANIMALS = [
     { emoji:'🐱', name:'Котик',   say:'Мяу!',  tint:'#ffe3ef', voice:'cat'     },
     { emoji:'🐶', name:'Пёсик',   say:'Гав!',  tint:'#e2f0ff', voice:'dog'     },
-    { emoji:'🐰', name:'Зайка',   say:'Прыг!', tint:'#ffeef6', voice:'rabbit'  },
+    { emoji:'🐰', name:'Кролик',  say:'Фыр-фыр!', tint:'#ffeef6', voice:'rabbit'  },
     { emoji:'🐻', name:'Мишка',   say:'Р-р-р', tint:'#ffeedd', voice:'bear'    },
-    { emoji:'🐼', name:'Панда',   say:'Ням!',  tint:'#eaf7e6', voice:'panda'   },
+    { emoji:'🐼', name:'Панда',   say:'Голос панды',  tint:'#eaf7e6', voice:'panda'   },
     { emoji:'🦊', name:'Лисёнок', say:'Тяв!',  tint:'#ffe8d9', voice:'fox'     },
     { emoji:'🐸', name:'Лягушка', say:'Ква!',  tint:'#e4f7da', voice:'frog'    },
     { emoji:'🐷', name:'Свинка',  say:'Хрю!',  tint:'#ffe6ee', voice:'pig'     },
     { emoji:'🐮', name:'Коровка', say:'Му-у!', tint:'#eef0ff', voice:'cow'     },
     { emoji:'🐑', name:'Овечка',  say:'Бе-е!', tint:'#f3f1ff', voice:'sheep'   },
-    { emoji:'🦆', name:'Утёнок',  say:'Кря!',  tint:'#fff5d6', voice:'duck'    },
+    { emoji:'🦆', name:'Уточка',  say:'Кря!',  tint:'#fff5d6', voice:'duck'    },
     { emoji:'🐧', name:'Пингвин', say:'И-и!',  tint:'#e6f4ff', voice:'penguin' }
   ];
 
@@ -1267,6 +1226,9 @@
   };
 
   function go(id) {
+    screenEpoch++;
+    stopAnimalSound();
+    soundNotice('');
     var prev = GAMES[current];
     if (prev && prev.leave) prev.leave();
 
@@ -1292,6 +1254,7 @@
     document.title = (id === 'home') ? 'Нурия — игры и звуки' : (meta.title + ' — Нурия');
     window.scrollTo(0, 0);
 
+    if (['animals','hide','guess','memory','bubbles','eat'].indexOf(id) >= 0) preloadAnimalSounds();
     var g = GAMES[id];
     if (g && g.build) g.build();
     if (g && g.enter) g.enter();
@@ -1300,6 +1263,15 @@
   /* ============================================================
      ГЛАВНЫЙ ЭКРАН
      ============================================================ */
+  /* Generated illustrations share the same stable IDs as recorded sounds. */
+  var ANIMAL_ART = {'🐱':'cat','🐶':'dog','🐰':'rabbit','🐻':'bear','🐼':'panda','🦊':'fox','🐸':'frog','🐷':'pig','🐮':'cow','🐑':'sheep','🦆':'duck','🐧':'penguin','🐭':'mouse','🐿️':'squirrel','🐨':'koala','🐵':'monkey','🐔':'hen'};
+  var FOOD_ART = {'🥕':'carrot','🍯':'honey','🎋':'bamboo','🐟':'fish','🥩':'meat','🌽':'corn','🌿':'grass','🌾':'hay','🪰':'fly','🧀':'cheese','🌰':'nut','🍃':'leaf','🍌':'banana'};
+  function art(id) {
+    return '<img class="art-img" src="assets/images/' + id + '.webp" alt="" width="256" height="256" draggable="false">';
+  }
+  function animalArt(a) { return art('animals-' + (a.voice || ANIMAL_ART[a.animal])); }
+  function foodArt(f) { return art('food-' + (f.what === 'зёрнышки' ? 'grain' : FOOD_ART[f.food])); }
+
   function buildHome() {
     var box = document.getElementById('tiles');
     if (box.dataset.built) return;
@@ -1324,7 +1296,7 @@
       b.dataset.game = t.id;
       b.style.setProperty('--tint', tileLooks[t.id][0]);
       b.style.setProperty('--edge', tileLooks[t.id][1]);
-      b.innerHTML = '<span class="em" aria-hidden="true">' + t.em + '</span>' +
+      b.innerHTML = '<span class="em" aria-hidden="true">' + art('games-' + t.id) + '</span>' +
                     '<span class="lbl">' + t.label + '</span>' +
                     '<span class="tile-sub" aria-hidden="true">' + tileLooks[t.id][2] + '</span>';
       b.setAttribute('aria-label', t.label);
@@ -1360,7 +1332,8 @@
       var face = document.createElement('span');
       face.className = 'face';
       face.setAttribute('aria-hidden', 'true');
-      face.textContent = a.emoji;
+      face.innerHTML = animalArt(a);
+      card.dataset.animal = a.voice;
 
       var name = document.createElement('span');
       name.className = 'name';
@@ -1425,12 +1398,12 @@
         var who = document.createElement('span');
         who.className = 'who';
         who.setAttribute('aria-hidden', 'true');
-        who.textContent = '❓';
+        who.innerHTML = '';
 
         var cover = document.createElement('span');
         cover.className = 'cover';
         cover.setAttribute('aria-hidden', 'true');
-        cover.textContent = pick(['🌿','🍃','🌱','🪴']);
+        cover.innerHTML = art('games-hide');
 
         card.appendChild(who);
         card.appendChild(cover);
@@ -1448,8 +1421,8 @@
     clearTimeout(HIDE.timer);
     HIDE.cards.forEach(function (c) {
       c.el.classList.remove('open');
-      c.who.textContent = '❓';
-      c.cover.textContent = pick(['🌿','🍃','🌱','🪴']);
+      c.who.innerHTML = '';
+      c.cover.innerHTML = art('games-hide');
     });
   }
 
@@ -1465,8 +1438,9 @@
     audio();
 
     var a = pick(ANIMALS);
-    who.textContent = a.emoji;
-    cover.textContent = pick(['🌿','🍃','🌱','🪴']);
+    who.innerHTML = animalArt(a);
+    card.dataset.animal = a.voice;
+    cover.innerHTML = art('games-hide');
     card.classList.add('open');
 
     play(a.voice, 0.94 + Math.random() * 0.13);
@@ -1530,14 +1504,15 @@
       b.className = 'opt';
       b.style.setProperty('--tint', a.tint);
       b.setAttribute('aria-label', a.name);
-      b.innerHTML = '<span class="oe" aria-hidden="true">' + a.emoji + '</span>' +
+      b.dataset.animal = a.voice;
+      b.innerHTML = '<span class="oe" aria-hidden="true">' + animalArt(a) + '</span>' +
                     '<span class="on">' + a.name + '</span>';
       b.addEventListener('click', function () { guessPick(a, b); });
       opts.appendChild(b);
     });
 
     clearTimeout(GUESS.timer);
-    GUESS.timer = setTimeout(function () { play(target.voice); }, 420);
+    GUESS.timer = onScreen(function () { play(target.voice); }, 420);
   }
 
   function guessPick(a, btn) {
@@ -1552,7 +1527,7 @@
         if (sibs[i] !== btn) sibs[i].classList.add('off');
       }
       play(GUESS.target.voice);
-      setTimeout(function () { play('sparkle'); }, 260);
+      onScreen(function () { play('sparkle'); }, 260);
       var c = rectCenter(btn);
       spawnBits(c.x, c.y, 10, true);
       bump(2);
@@ -1563,7 +1538,7 @@
       setTimeout(function () { btn.classList.remove('wrong'); }, 500);
       play('soft');
       clearTimeout(GUESS.timer);
-      GUESS.timer = setTimeout(function () { play(GUESS.target.voice); }, 450);
+      GUESS.timer = onScreen(function () { play(GUESS.target.voice); }, 450);
     }
   }
 
@@ -1592,7 +1567,7 @@
       b.className = 'key';
       b.style.setProperty('--k', k.c);
       b.setAttribute('aria-label', 'Клавиша ' + k.e);
-      b.innerHTML = '<span class="ke" aria-hidden="true">' + k.e + '</span><span class="dot" aria-hidden="true"></span>';
+      b.innerHTML = '<span class="ke" aria-hidden="true">' + art('animals-' + (ANIMAL_ART[k.e] || 'chick')) + '</span><span class="dot" aria-hidden="true"></span>';
 
       function hit() {
         audio();
@@ -1652,7 +1627,8 @@
     b.type = 'button';
     b.className = 'bubble';
     b.setAttribute('aria-label', 'Лопнуть пузырёк');
-    b.textContent = a.emoji;
+    b.innerHTML = animalArt(a);
+    b.dataset.animal = a.voice;
     b.style.width = size + 'px';
     b.style.height = size + 'px';
     b.style.fontSize = Math.round(size * 0.44) + 'px';
@@ -1675,7 +1651,7 @@
       b.remove();
 
       play('pop');
-      setTimeout(function () { play(a.voice, 0.94 + Math.random() * 0.13); }, 80);
+      onScreen(function () { play(a.voice, 0.94 + Math.random() * 0.13); }, 80);
       spawnBits(r.left + r.width / 2, r.top + r.height / 2, 4);
       bump();
     });
@@ -1727,7 +1703,7 @@
     FW.last = now;
 
     play('boom');
-    setTimeout(function () { play('sparkle'); }, 140);
+    onScreen(function () { play('sparkle'); }, 140);
 
     var col = pick(FW_COLORS);
     var col2 = pick(FW_COLORS);
@@ -1753,11 +1729,12 @@
     }
 
     // эмодзи-искры разлетаются вместе с точками
-    var em = ['✨','⭐','💫','🌟','💖','🎆','🌈'];
+    var em = ['games-fireworks','games-heart','games-flower'];
     for (var j = 0; j < 8; j++) {
       var q = document.createElement('i');
       q.className = 'spark';
-      q.textContent = em[j % em.length];
+      q.innerHTML = art(em[j % em.length]);
+      q.style.width = q.style.height = '42px';
       q.style.left = x + 'px';
       q.style.top = y + 'px';
       q.style.fontSize = (30 + Math.random() * 18).toFixed(0) + 'px';
@@ -1806,7 +1783,7 @@
 
     var face = document.getElementById('eatFace');
     var name = document.getElementById('eatName');
-    if (face) face.textContent = t.animal;
+    if (face) face.innerHTML = animalArt(t);
     if (name) name.textContent = t.who + ' хочет кушать';
 
     var seenFoods = {};
@@ -1824,7 +1801,7 @@
       b.type = 'button';
       b.className = 'eat-opt';
       b.setAttribute('aria-label', f.what);
-      b.innerHTML = '<span class="ef" aria-hidden="true">' + f.food + '</span>' +
+      b.innerHTML = '<span class="ef" aria-hidden="true">' + foodArt(f) + '</span>' +
                     '<span class="en">' + f.what + '</span>';
       b.addEventListener('click', function () { eatPick(f, b); });
       opts.appendChild(b);
@@ -1848,7 +1825,7 @@
 
       play('chomp');
       var friend = ANIMALS.filter(function (a) { return a.emoji === EAT.target.animal; })[0];
-      setTimeout(function () { if (current === 'eat') play(friend ? friend.voice : 'sparkle'); }, 280);
+      onScreen(function () { play(friend ? friend.voice : 'sparkle'); }, 280);
 
       var animal = document.getElementById('eatAnimal');
       if (animal) {
@@ -1909,8 +1886,9 @@
       b.type = 'button';
       b.className = 'mem-card';
       b.setAttribute('aria-label', 'Карточка');
-      b.innerHTML = '<span class="mem-back" aria-hidden="true">🐾</span>' +
-                    '<span class="mem-face" aria-hidden="true">' + a.emoji + '</span>';
+      b.dataset.animal = a.voice;
+      b.innerHTML = '<span class="mem-back" aria-hidden="true">' + art('games-flower') + '</span>' +
+                    '<span class="mem-face" aria-hidden="true">' + animalArt(a) + '</span>';
       b.addEventListener('click', function () { memTap(b, a); });
       grid.appendChild(b);
     });
@@ -1922,7 +1900,7 @@
 
     el.classList.add('open');
     play('flip');
-    setTimeout(function () { play(a.voice); }, 140);
+    onScreen(function () { play(a.voice); }, 140);
 
     MEM.open.push({ el: el, a: a });
     if (MEM.open.length < 2) return;
@@ -1933,7 +1911,7 @@
     if (x.a.voice === y.a.voice) {
       x.el.classList.add('matched');
       y.el.classList.add('matched');
-      setTimeout(function () { play('sparkle'); }, 260);
+      onScreen(function () { play('sparkle'); }, 260);
       var c = rectCenter(y.el);
       spawnBits(c.x, c.y, 6, true);
       bump(2);
@@ -2044,7 +2022,7 @@
 
   muteBtn.addEventListener('click', function () {
     muted = !muted;
-    if (muted) { hush(); clearNumberSounds(); }
+    if (muted) { hush(); clearNumberSounds(); stopAnimalSound(); }
     if (bus && ctx) bus.gain.setValueAtTime(muted ? 0 : 0.85, ctx.currentTime);
     muteBtn.classList.toggle('off', muted);
     muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
