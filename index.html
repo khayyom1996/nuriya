@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Маленький мир Нурии: десять добрых игр со зверятами, цветами, музыкой и маленькими открытиями.">
+<meta name="description" content="Маленький мир Нурии: одиннадцать добрых игр со зверятами, рисованием, цветами, музыкой и маленькими открытиями.">
 <meta name="theme-color" content="#ffd9ec">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -683,6 +683,7 @@
   .bush .cover .art-img { width:110px; height:110px; }
   @media(max-width:600px) { .key .ke { width:58px; height:58px; } .bush .cover .art-img { width:85px; height:85px; } }
 </style>
+<link rel="stylesheet" href="assets/drawing.css">
 </head>
 <body>
 
@@ -706,7 +707,7 @@
       </div>
       <img class="welcome-art" src="assets/images/welcome.webp" width="1000" height="667" alt="Зайка и мишка под мягкой радугой" fetchpriority="high">
     </div>
-    <div class="play-heading"><div><h2>Во что поиграем?</h2><p>Выбирай картинку — и начнём!</p></div><span class="game-count">10 добрых игр</span></div>
+    <div class="play-heading"><div><h2>Во что поиграем?</h2><p>Выбирай картинку — и начнём!</p></div><span class="game-count">11 добрых игр</span></div>
     <div class="tiles" id="tiles"></div>
     <p class="home-footer">Маленькие шаги. Большие открытия.<br>С любовью для Нурии <span>♡</span><br><a href="credits.html">Источники звуков · для родителей</a></p>
   </section>
@@ -764,6 +765,33 @@
   <section class="screen" id="scr-numbers" aria-label="Цифры">
     <div class="num-grid" id="numGrid"></div>
   </section>
+  <section class="screen" id="scr-drawing" aria-label="Рисовалка">
+    <div class="drawing-room">
+      <div class="draw-tools">
+        <div class="draw-tool-heading"><span>Выбери цвет</span><span id="drawColorName">Розовый</span></div>
+        <div class="draw-palette" id="drawPalette" role="group" aria-label="Цвет кисточки"></div>
+        <div class="draw-brush-row">
+          <span>Кисточка</span>
+          <div class="draw-sizes" id="drawSizes" role="group" aria-label="Размер кисточки"></div>
+          <span class="draw-size-name" id="drawSizeName">Средняя</span>
+        </div>
+      </div>
+      <div class="draw-paper">
+        <canvas id="drawCanvas" width="1200" height="900" role="img" aria-label="Лист для рисования пальчиком или мышью">Для рисования нужен браузер с поддержкой Canvas.</canvas>
+        <div class="draw-hint" id="drawHint" aria-hidden="true"><img src="assets/images/games-colors.webp" alt="" width="70" height="70"><span>Здесь живёт твоя фантазия!</span><small>Проведи пальчиком по листу</small></div>
+      </div>
+      <div class="draw-actions">
+        <button type="button" id="drawUndo" disabled><span aria-hidden="true">↶</span> Назад на штрих</button>
+        <button type="button" id="drawClear" disabled>Чистый лист</button>
+      </div>
+      <p class="draw-note" id="drawNote" role="status">Рисунок остаётся здесь, пока ты играешь.</p>
+    </div>
+    <dialog class="draw-dialog" id="drawClearDialog" aria-labelledby="drawClearTitle" aria-describedby="drawClearDescription">
+      <h2 id="drawClearTitle">Начнём новый рисунок?</h2>
+      <p id="drawClearDescription">Этот лист станет чистым.</p>
+      <div><button type="button" id="drawKeep" autofocus>Оставить рисунок</button><button type="button" id="drawConfirm">Да, очистить</button></div>
+    </dialog>
+  </section>
 </main>
 
 <div class="bar">
@@ -777,6 +805,7 @@
 </div>
 
 <div class="sound-status" id="soundStatus" role="status" aria-live="polite"></div>
+<script src="assets/drawing.js"></script>
 <script>
 (function () {
   'use strict';
@@ -1181,7 +1210,8 @@
     { id:'bubbles',   em:'🫧', label:'Пузырьки',    tint:'#e9e2ff' },
     { id:'fireworks', em:'✨', label:'Салют',       tint:'#fff5d6' },
     { id:'colors',    em:'🎨', label:'Цвета',       tint:'#ffe9f2' },
-    { id:'numbers',   em:'🔢', label:'Цифры',       tint:'#e6f4ff' }
+    { id:'numbers',   em:'🔢', label:'Цифры',       tint:'#e6f4ff' },
+    { id:'drawing', icon:'colors', label:'Рисовалка', tint:'#fce9e9' }
   ];
 
   var META = {
@@ -1195,7 +1225,8 @@
     eat:       { title:'Кто что ест', sub:'Покорми зверюшку — выбери еду' },
     memory:    { title:'Найди пару',  sub:'Открой две карточки и найди одинаковых' },
     colors:    { title:'Цвета',       sub:'Нажми на кружок — услышишь цвет' },
-    numbers:   { title:'Цифры',       sub:'Нажми на цифру — услышишь число' }
+    numbers:   { title:'Цифры',       sub:'Нажми на цифру — услышишь число' },
+    drawing:   { title:'Рисовалка',   sub:'Выбери цвет и рисуй пальчиком!' }
   };
 
   /* ============================================================
@@ -1222,7 +1253,15 @@
     eat:       { enter: eatEnter,       leave: eatLeave },
     memory:    { enter: memEnter,       leave: memLeave },
     colors:    { build: buildColors },
-    numbers:   { build: buildNumbers }
+    numbers:   { build: buildNumbers },
+    drawing: {
+      build: function () {
+        if (window.NuriyaDrawing) window.NuriyaDrawing.build();
+        else soundNotice('Рисовалка пока не загрузилась. Обнови страницу');
+      },
+      enter: function () { if (window.NuriyaDrawing) window.NuriyaDrawing.enter(); },
+      leave: function () { if (window.NuriyaDrawing) window.NuriyaDrawing.leave(); }
+    }
   };
 
   function go(id) {
@@ -1287,7 +1326,8 @@
       bubbles: ['#e3f2ee','#cce5dc','Лоп-лоп, пузырёк!'],
       fireworks: ['#eee8f8','#dcd1ed','Зажигаем звёздочки'],
       colors: ['#f9e3eb','#edcedd','Собери свою радугу'],
-      numbers: ['#fbf0d9','#ecdfbc','Считаем до десяти']
+      numbers: ['#fbf0d9','#ecdfbc','Считаем до десяти'],
+      drawing: ['#fbe6ed','#edd2df','Твои цвета. Твоя маленькая картина!']
     };
     TILES.forEach(function (t) {
       var b = document.createElement('button');
@@ -1296,7 +1336,7 @@
       b.dataset.game = t.id;
       b.style.setProperty('--tint', tileLooks[t.id][0]);
       b.style.setProperty('--edge', tileLooks[t.id][1]);
-      b.innerHTML = '<span class="em" aria-hidden="true">' + art('games-' + t.id) + '</span>' +
+      b.innerHTML = '<span class="em" aria-hidden="true">' + art('games-' + (t.icon || t.id)) + '</span>' +
                     '<span class="lbl">' + t.label + '</span>' +
                     '<span class="tile-sub" aria-hidden="true">' + tileLooks[t.id][2] + '</span>';
       b.setAttribute('aria-label', t.label);
